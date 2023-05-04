@@ -1,0 +1,312 @@
+
+
+
+ARM Macro Assembler    Page 1 
+
+
+    1 00000000         ; main.s
+    2 00000000         ; Desenvolvido para a placa EK-TM4C1294XL
+    3 00000000         ; Prof. Guilherme Peron
+    4 00000000         ; Rev1: 10/03/2018
+    5 00000000         ; Rev2: 10/04/2019
+    6 00000000         ; Este programa espera o usuário apertar a chave USR_SW1
+                        e/ou a chave USR_SW2.
+    7 00000000         ; Caso o usuário pressione a chave USR_SW1, acenderá o L
+                       ED3 (PF4). Caso o usuário pressione 
+    8 00000000         ; a chave USR_SW2, acenderá o LED4 (PF0). Caso as duas c
+                       haves sejam pressionadas, os dois 
+    9 00000000         ; LEDs acendem.
+   10 00000000         
+   11 00000000         ; ------------------------------------------------------
+                       -------------------------
+   12 00000000                 THUMB                        ; Instruções do tip
+                                                            o Thumb-2
+   13 00000000         ; ------------------------------------------------------
+                       -------------------------
+   14 00000000         ; Declarações EQU - Defines
+   15 00000000         ;<NOME>         EQU <VALOR>
+   16 00000000         ; ========================
+   17 00000000         
+   18 00000000         ; ------------------------------------------------------
+                       -------------------------
+   19 00000000         ; Área de Dados - Declarações de variáveis
+   20 00000000                 AREA             DATA, ALIGN=2
+   21 00000000         ; Se alguma variável for chamada em outro arquivo
+   22 00000000         ;EXPORT  <var> [DATA,SIZE=<tam>]   ; Permite chamar a va
+                       riável <var> a 
+   23 00000000         ; partir de outro arquivo
+   24 00000000         ;<var> SPACE <tam>                        ; Declara uma 
+                       variável de nome <var>
+   25 00000000         ; de <tam> bytes a partir da primeira 
+   26 00000000         ; posição da RAM  
+   27 00000000         
+   28 00000000         ; ------------------------------------------------------
+                       -------------------------
+   29 00000000         ; Área de Código - Tudo abaixo da diretiva a seguir será
+                        armazenado na memória de 
+   30 00000000         ;                  código
+   31 00000000                 AREA             |.text|, CODE, READONLY, ALIGN=
+2
+   32 00000000         
+   33 00000000         ; Se alguma função do arquivo for chamada em outro arqui
+                       vo 
+   34 00000000                 EXPORT           Start       ; Permite chamar a 
+                                                            função Start a part
+                                                            ir de 
+   35 00000000         ; outro arquivo. No caso startup.s
+   36 00000000         
+   37 00000000         ; Se chamar alguma função externa 
+   38 00000000         ;IMPORT <func>              ; Permite chamar dentro dest
+                       e arquivo uma 
+   39 00000000         ; função <func>
+   40 00000000                 IMPORT           PLL_Init
+   41 00000000                 IMPORT           SysTick_Init
+   42 00000000                 IMPORT           SysTick_Wait1ms
+   43 00000000         
+
+
+
+ARM Macro Assembler    Page 2 
+
+
+   44 00000000                 IMPORT           GPIO_Init
+   45 00000000                 IMPORT           PortF_Output
+   46 00000000                 IMPORT           PortJ_Input
+   47 00000000                 IMPORT           GPIOPortJ_Handler
+   48 00000000                 IMPORT           LCD_init
+   49 00000000                 IMPORT           LCD_DATA
+   50 00000000         
+   51 00000000         ; ------------------------------------------------------
+                       -------------------------
+   52 00000000         ; Função main()
+   53 00000000         Start
+   54 00000000 F7FF FFFE       BL               PLL_Init    ;Chama a subrotina 
+                                                            para alterar o cloc
+                                                            k do microcontrolad
+                                                            or para 80MHz
+   55 00000004 F7FF FFFE       BL               SysTick_Init
+   56 00000008 F7FF FFFE       BL               GPIO_Init   ;Chama a subrotina 
+                                                            que inicializa os G
+                                                            PIO
+   57 0000000C F7FF FFFE       BL               LCD_init
+   58 00000010         
+   59 00000010 F04F 0041       MOV              R0, #'A'
+   60 00000014 F7FF FFFE       BL               LCD_DATA
+   61 00000018         
+   62 00000018 480C            LDR              R0, =STR2
+   63 0000001A F000 F802       BL               print_string
+   64 0000001E         
+   65 0000001E         MainLoop
+   66 0000001E BF00            NOP
+   67 00000020 E7FD            B                MainLoop    ;Volta para o laço 
+                                                            principal 
+   68 00000022         
+   69 00000022         ; ------------------------------------------------------
+                       -------------------------
+   70 00000022         ; Função LCD_write_data
+   71 00000022         ; Parâmetro de entrada: R0: ASCII a ser escrito
+   72 00000022         ; Parâmetro de saída: nao tem
+   73 00000022         print_string
+   74 00000022         loop_print_string
+   75 00000022 F810 1B01       LDRB             R1, [R0], #1
+   76 00000026 B500            PUSH             {LR}
+   77 00000028 F7FF FFFE       BL               LCD_DATA
+   78 0000002C F85D EB04       POP              {LR}
+   79 00000030 2900            CMP              R1, #0
+   80 00000032 D1F6            BNE              loop_print_string
+   81 00000034         
+   82 00000034 4770            BX               LR
+   83 00000036         
+   84 00000036         
+   85 00000036         ; ------------------------------------------------------
+                       -------------------------
+   86 00000036         
+   87 00000036 55 54 46 
+              50 52 20 
+              2D 20 6D 
+              69 63 72 
+              6F 00    STR1    DCB              "UTFPR - micro",0
+   88 00000044 6E 6F 6D 
+              65 00    STR2    DCB              'n','o','m','e',0
+
+
+
+ARM Macro Assembler    Page 3 
+
+
+   89 00000049         
+   90 00000049 00 00 00        ALIGN                        ;Garante que o fim 
+                                                            da seção está alinh
+                                                            ada 
+   91 0000004C                 END                          ;Fim do arquivo
+              00000000 
+Command Line: --debug --xref --diag_suppress=9931 --cpu=Cortex-M4.fp.sp --apcs=
+interwork --depend=.\objects\main.d -o.\objects\main.o -IC:\Users\roger\AppData
+\Local\Arm\Packs\Keil\TM4C_DFP\1.1.0\Device\Include\TM4C129 --predefine="__EVAL
+ SETA 1" --predefine="__UVISION_VERSION SETA 536" --predefine="TM4C1294NCPDT SE
+TA 1" --list=.\listings\main.lst main.s
+
+
+
+ARM Macro Assembler    Page 1 Alphabetic symbol ordering
+Relocatable symbols
+
+DATA 00000000
+
+Symbol: DATA
+   Definitions
+      At line 20 in file main.s
+   Uses
+      None
+Comment: DATA unused
+1 symbol
+
+
+
+ARM Macro Assembler    Page 1 Alphabetic symbol ordering
+Relocatable symbols
+
+.text 00000000
+
+Symbol: .text
+   Definitions
+      At line 31 in file main.s
+   Uses
+      None
+Comment: .text unused
+MainLoop 0000001E
+
+Symbol: MainLoop
+   Definitions
+      At line 65 in file main.s
+   Uses
+      At line 67 in file main.s
+Comment: MainLoop used once
+STR1 00000036
+
+Symbol: STR1
+   Definitions
+      At line 87 in file main.s
+   Uses
+      None
+Comment: STR1 unused
+STR2 00000044
+
+Symbol: STR2
+   Definitions
+      At line 88 in file main.s
+   Uses
+      At line 62 in file main.s
+Comment: STR2 used once
+Start 00000000
+
+Symbol: Start
+   Definitions
+      At line 53 in file main.s
+   Uses
+      At line 34 in file main.s
+Comment: Start used once
+loop_print_string 00000022
+
+Symbol: loop_print_string
+   Definitions
+      At line 74 in file main.s
+   Uses
+      At line 80 in file main.s
+Comment: loop_print_string used once
+print_string 00000022
+
+Symbol: print_string
+   Definitions
+      At line 73 in file main.s
+   Uses
+      At line 63 in file main.s
+Comment: print_string used once
+7 symbols
+
+
+
+ARM Macro Assembler    Page 1 Alphabetic symbol ordering
+External symbols
+
+GPIOPortJ_Handler 00000000
+
+Symbol: GPIOPortJ_Handler
+   Definitions
+      At line 47 in file main.s
+   Uses
+      None
+Comment: GPIOPortJ_Handler unused
+GPIO_Init 00000000
+
+Symbol: GPIO_Init
+   Definitions
+      At line 44 in file main.s
+   Uses
+      At line 56 in file main.s
+Comment: GPIO_Init used once
+LCD_DATA 00000000
+
+Symbol: LCD_DATA
+   Definitions
+      At line 49 in file main.s
+   Uses
+      At line 60 in file main.s
+      At line 77 in file main.s
+
+LCD_init 00000000
+
+Symbol: LCD_init
+   Definitions
+      At line 48 in file main.s
+   Uses
+      At line 57 in file main.s
+Comment: LCD_init used once
+PLL_Init 00000000
+
+Symbol: PLL_Init
+   Definitions
+      At line 40 in file main.s
+   Uses
+      At line 54 in file main.s
+Comment: PLL_Init used once
+PortF_Output 00000000
+
+Symbol: PortF_Output
+   Definitions
+      At line 45 in file main.s
+   Uses
+      None
+Comment: PortF_Output unused
+PortJ_Input 00000000
+
+Symbol: PortJ_Input
+   Definitions
+      At line 46 in file main.s
+   Uses
+      None
+Comment: PortJ_Input unused
+SysTick_Init 00000000
+
+
+
+
+ARM Macro Assembler    Page 2 Alphabetic symbol ordering
+External symbols
+
+Symbol: SysTick_Init
+   Definitions
+      At line 41 in file main.s
+   Uses
+      At line 55 in file main.s
+Comment: SysTick_Init used once
+SysTick_Wait1ms 00000000
+
+Symbol: SysTick_Wait1ms
+   Definitions
+      At line 42 in file main.s
+   Uses
+      None
+Comment: SysTick_Wait1ms unused
+9 symbols
+353 symbols in table
