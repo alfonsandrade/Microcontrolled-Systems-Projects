@@ -47,45 +47,57 @@
 		IMPORT GPIOPortJ_Handler
 		IMPORT LCD_init
 		IMPORT LCD_DATA
-
+		IMPORT LCD_print_string
+		IMPORT LCD_reset
+		
 ; -------------------------------------------------------------------------------
-; Função main()
-Start  			
-	BL PLL_Init                  ;Chama a subrotina para alterar o clock do microcontrolador para 80MHz
-	BL SysTick_Init
-	BL GPIO_Init                 ;Chama a subrotina que inicializa os GPIO
-	BL LCD_init
-	
-	MOV R0, #'A'
-	BL LCD_DATA
-	
-	LDR R0, =STR2
-	BL print_string
-	
-MainLoop
-	NOP
-	B MainLoop                   ;Volta para o laço principal	
-
-; -------------------------------------------------------------------------------
-; Função LCD_write_data
-; Parâmetro de entrada: R0: ASCII a ser escrito
+; Função wait_5_seconds
+; Parâmetro de entrada: nao tem
 ; Parâmetro de saída: nao tem
-print_string
-loop_print_string
-	LDRB R1, [R0], #1
+wait_1_seconds
+	MOV R0, #1000
 	PUSH {LR}
-	BL LCD_DATA
+	BL SysTick_Wait1ms
 	POP {LR}
-	CMP R1, #0
-	BNE loop_print_string
-	
-	BX LR
-
-
 ; -------------------------------------------------------------------------------
+    AREA CODE, CODE
+    ENTRY
+Start
+    BL PLL_Init
+    BL SysTick_Init
+    BL GPIO_Init
+    BL LCD_init
 
-STR1	DCB	"UTFPR - micro",0
-STR2	DCB	'n','o','m','e',0
+MainLoop
+    LDR R0, =COFRE_ABERTO
+    BL LCD_print_string
+	BL wait_1_seconds
+	BL LCD_reset
+    LDR R0, =COFRE_FECHADO
+    BL LCD_print_string
+	BL wait_1_seconds
+	BL LCD_reset
+    LDR R0, =COFRE_BLOQUEIO
+    BL LCD_print_string
+	BL wait_1_seconds
+	BL LCD_reset
+    LDR R0, =SENHA_CORRETA
+    BL LCD_print_string
+	BL wait_1_seconds
+	BL LCD_reset
+    LDR R0, =SENHA_ERRADA 
+    BL LCD_print_string
+	BL wait_1_seconds
+	BL LCD_reset
+
+    B MainLoop
+
+
+COFRE_ABERTO   DCB "COFRE ABERTO", 0 ; Null-terminated string using your syntax
+COFRE_FECHADO  DCB "COFRE FECHADO", 0 ; Null-terminated string using your syntax
+COFRE_BLOQUEIO DCB "COFRE BLOQUEADO", 0 ; Null-terminated string using your syntax
+SENHA_CORRETA  DCB "SENHA CORRETA", 0 ; Null-terminated string using your syntax
+SENHA_ERRADA   DCB "SENHA ERRADA", 0 ; Null-terminated string using your syntax; Função wait_5_seconds
 
     ALIGN                        ;Garante que o fim da seção está alinhada 
     END                          ;Fim do arquivo

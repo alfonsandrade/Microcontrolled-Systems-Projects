@@ -130,7 +130,8 @@ GPIO_PORTM              EQU 2_100000000000
 		EXPORT GPIOPortJ_Handler
 		EXPORT LCD_init
 		EXPORT LCD_DATA
-			
+		EXPORT LCD_print_string
+		EXPORT LCD_reset
 		IMPORT SysTick_Wait1us
 		
 				
@@ -412,7 +413,7 @@ LCD_reset
 	BL LCD_CMD
 	POP{LR}
 	
-	MOV R0, #1640
+	MOV R0, #5000
 	PUSH {LR}
 	BL SysTick_Wait1us
 	POP {LR}
@@ -469,7 +470,26 @@ LCD_DATA
 	POP {LR}
 	
 	BX LR
+; -------------------------------------------------------------------------------
+; Função LCD_print_string
+; Parâmetro de entrada: R0: Endereço da string a ser impressa
+; Parâmetro de saída: nao tem
+LCD_print_string
+    PUSH {R4, LR} ; Salvar R4 e LR no stack
+    MOV R4, R0    ; Mover o endereço da string para R4
 
+print_loop
+    LDRB R0, [R4] ; Carregar o byte atual da string em R0
+    CMP R0, #0    ; Comparar R0 com 0 (verificar se é o terminador nulo)
+    BEQ done      ; Se R0 == 0, então sair do loop e ir para o rótulo 'done'
+
+    BL LCD_DATA   ; Escrever o caractere em R0 no LCD
+    ADD R4, R4, #1 ; Incrementar o ponteiro da string R4
+    B print_loop  ; Voltar para o início do loop
+
+done
+    POP {R4, LR} ; Restaurar R4 e LR do stack
+    BX LR        ; Retornar
 ; -------------------------------------------------------------------------------
 ; fim do arquivo
 	ALIGN                           ; garante que o fim da seção está alinhada 
