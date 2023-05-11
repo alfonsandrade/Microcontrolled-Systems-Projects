@@ -45,59 +45,62 @@
         IMPORT  PortF_Output
         IMPORT PortJ_Input
 		IMPORT GPIOPortJ_Handler
+			
 		IMPORT LCD_init
-		IMPORT LCD_DATA
-		IMPORT LCD_print_string
 		IMPORT LCD_reset
-		
+		IMPORT LCD_command
+		IMPORT LCD_write_data
+		IMPORT LCD_print_string
+			
+		IMPORT MKBOARD_init
+		IMPORT MKBOARD_getValuePressed
+		IMPORT MKBOARD_valueToASCII
+			
+		IMPORT SysTick_Wait1us
+
 ; -------------------------------------------------------------------------------
-; Função wait_5_seconds
-; Parâmetro de entrada: nao tem
-; Parâmetro de saída: nao tem
-wait_1_seconds
+; Função main()
+Start  			
+	BL PLL_Init                  ;Chama a subrotina para alterar o clock do microcontrolador para 80MHz
+	BL SysTick_Init
+	BL GPIO_Init                 ;Chama a subrotina que inicializa os GPIO
+	BL LCD_init
+	BL MKBOARD_init
+	
+	LDR R0, =STR1
+	BL LCD_print_string
 	MOV R0, #1000
-	PUSH {LR}
 	BL SysTick_Wait1ms
-	POP {LR}
-; -------------------------------------------------------------------------------
-    AREA CODE, CODE
-    ENTRY
-Start
-    BL PLL_Init
-    BL SysTick_Init
-    BL GPIO_Init
-    BL LCD_init
-
+	BL LCD_reset
+	
 MainLoop
-    LDR R0, =COFRE_ABERTO
-    BL LCD_print_string
-	BL wait_1_seconds
-	BL LCD_reset
-    LDR R0, =COFRE_FECHADO
-    BL LCD_print_string
-	BL wait_1_seconds
-	BL LCD_reset
-    LDR R0, =COFRE_BLOQUEIO
-    BL LCD_print_string
-	BL wait_1_seconds
-	BL LCD_reset
-    LDR R0, =SENHA_CORRETA
-    BL LCD_print_string
-	BL wait_1_seconds
-	BL LCD_reset
-    LDR R0, =SENHA_ERRADA 
-    BL LCD_print_string
-	BL wait_1_seconds
-	BL LCD_reset
+	
+	; pega um valor do teclado
+	BL MKBOARD_getValuePressed
+	
+	CMP R0, #0xFF
+	BEQ MainLoop
+	CMP R0, #0xF
+	BEQ Reset      
+	BL MKBOARD_valueToASCII
+	BL LCD_write_data
+	B MainLoop
 
-    B MainLoop
+Reset
+	BL LCD_reset
+	B MainLoop                   ;Volta para o laço principal	
 
+; -------------------------------------------------------------------------------
 
-COFRE_ABERTO   DCB "COFRE ABERTO", 0 ; Null-terminated string using your syntax
-COFRE_FECHADO  DCB "COFRE FECHADO", 0 ; Null-terminated string using your syntax
-COFRE_BLOQUEIO DCB "COFRE BLOQUEADO", 0 ; Null-terminated string using your syntax
-SENHA_CORRETA  DCB "SENHA CORRETA", 0 ; Null-terminated string using your syntax
-SENHA_ERRADA   DCB "SENHA ERRADA", 0 ; Null-terminated string using your syntax; Função wait_5_seconds
+STR1	DCB	"DEU BOA 1",0
+STR2	DCB "DEU BOA 2", 0
+;STR2	DCB	'n','o','m','e',0
+MSG_NENHUM_VALOR DCB "Sem Valor!",0
+MSG_OPEN	DCB "Cofre Aberto :) !",0
+MSG_OPENING	DCB	"Cofre Abrindo",0
+MSG_CLOSING	DCB "Cofre Fechando",0
+MSG_CLOSED	DCB	"Cofre Fechado!",0
+MSG_LOCKED	DCB	"Cofre Travado!",0
 
     ALIGN                        ;Garante que o fim da seção está alinhada 
     END                          ;Fim do arquivo

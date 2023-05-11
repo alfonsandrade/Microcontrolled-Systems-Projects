@@ -1,0 +1,1556 @@
+
+
+
+ARM Macro Assembler    Page 1 
+
+
+    1 00000000         ;matrix_keyboard.s
+    2 00000000         ; Desenvolvido para a placa EK-TM4C1294XL
+    3 00000000         ; Codigo que apresenta algumas funcionalidades:
+    4 00000000         
+    5 00000000         ; ------------------------------------------------------
+                       -------------------------
+    6 00000000                 THUMB                        ; instrucoes do tip
+                                                            o Thumb-2
+    7 00000000         ; ------------------------------------------------------
+                       -------------------------
+    8 00000000         ; Declaracoes EQU - Defines
+    9 00000000         ; ========================
+   10 00000000         ; Definicoes dos Registradores Gerais
+   11 00000000 400FE608 
+                       SYSCTL_RCGCGPIO_R
+                               EQU              0x400FE608
+   12 00000000 400FEA08 
+                       SYSCTL_PRGPIO_R
+                               EQU              0x400FEA08
+   13 00000000         
+   14 00000000 00000080 
+                       COLUMN_1
+                               EQU              2_10000000
+   15 00000000 00000040 
+                       COLUMN_2
+                               EQU              2_01000000
+   16 00000000 00000020 
+                       COLUMN_3
+                               EQU              2_00100000
+   17 00000000 00000010 
+                       COLUMN_4
+                               EQU              2_00010000
+   18 00000000 0000000E 
+                       LINE_1  EQU              2_1110
+   19 00000000 0000000D 
+                       LINE_2  EQU              2_1101
+   20 00000000 0000000B 
+                       LINE_3  EQU              2_1011
+   21 00000000 00000007 
+                       LINE_4  EQU              2_0111
+   22 00000000         
+   23 00000000         ; ========================
+   24 00000000         ; Definicoes dos Ports
+   25 00000000         
+   26 00000000         ;PORT L
+   27 00000000 00000400 
+                       GPIO_PORTL
+                               EQU              2_10000000000
+   28 00000000 40062000 
+                       GPIO_PORTL_DATA_BITS_R
+                               EQU              0x40062000
+   29 00000000 400623FC 
+                       GPIO_PORTL_DATA_R
+                               EQU              0x400623FC
+   30 00000000 40062400 
+                       GPIO_PORTL_DIR_R
+                               EQU              0x40062400
+   31 00000000 40062404 
+                       GPIO_PORTL_IS_R
+
+
+
+ARM Macro Assembler    Page 2 
+
+
+                               EQU              0x40062404
+   32 00000000 40062408 
+                       GPIO_PORTL_IBE_R
+                               EQU              0x40062408
+   33 00000000 4006240C 
+                       GPIO_PORTL_IEV_R
+                               EQU              0x4006240C
+   34 00000000 40062410 
+                       GPIO_PORTL_IM_R
+                               EQU              0x40062410
+   35 00000000 40062414 
+                       GPIO_PORTL_RIS_R
+                               EQU              0x40062414
+   36 00000000 40062418 
+                       GPIO_PORTL_MIS_R
+                               EQU              0x40062418
+   37 00000000 4006241C 
+                       GPIO_PORTL_ICR_R
+                               EQU              0x4006241C
+   38 00000000 40062420 
+                       GPIO_PORTL_AFSEL_R
+                               EQU              0x40062420
+   39 00000000 40062500 
+                       GPIO_PORTL_DR2R_R
+                               EQU              0x40062500
+   40 00000000 40062504 
+                       GPIO_PORTL_DR4R_R
+                               EQU              0x40062504
+   41 00000000 40062508 
+                       GPIO_PORTL_DR8R_R
+                               EQU              0x40062508
+   42 00000000 4006250C 
+                       GPIO_PORTL_ODR_R
+                               EQU              0x4006250C
+   43 00000000 40062510 
+                       GPIO_PORTL_PUR_R
+                               EQU              0x40062510
+   44 00000000 40062514 
+                       GPIO_PORTL_PDR_R
+                               EQU              0x40062514
+   45 00000000 40062518 
+                       GPIO_PORTL_SLR_R
+                               EQU              0x40062518
+   46 00000000 4006251C 
+                       GPIO_PORTL_DEN_R
+                               EQU              0x4006251C
+   47 00000000 40062520 
+                       GPIO_PORTL_LOCK_R
+                               EQU              0x40062520
+   48 00000000 40062524 
+                       GPIO_PORTL_CR_R
+                               EQU              0x40062524
+   49 00000000 40062528 
+                       GPIO_PORTL_AMSEL_R
+                               EQU              0x40062528
+   50 00000000 4006252C 
+                       GPIO_PORTL_PCTL_R
+                               EQU              0x4006252C
+   51 00000000 40062530 
+
+
+
+ARM Macro Assembler    Page 3 
+
+
+                       GPIO_PORTL_ADCCTL_R
+                               EQU              0x40062530
+   52 00000000 40062534 
+                       GPIO_PORTL_DMACTL_R
+                               EQU              0x40062534
+   53 00000000 40062538 
+                       GPIO_PORTL_SI_R
+                               EQU              0x40062538
+   54 00000000 4006253C 
+                       GPIO_PORTL_DR12R_R
+                               EQU              0x4006253C
+   55 00000000 40062540 
+                       GPIO_PORTL_WAKEPEN_R
+                               EQU              0x40062540
+   56 00000000 40062544 
+                       GPIO_PORTL_WAKELVL_R
+                               EQU              0x40062544
+   57 00000000 40062548 
+                       GPIO_PORTL_WAKESTAT_R
+                               EQU              0x40062548
+   58 00000000 40062FC0 
+                       GPIO_PORTL_PP_R
+                               EQU              0x40062FC0
+   59 00000000 40062FC4 
+                       GPIO_PORTL_PC_R
+                               EQU              0x40062FC4
+   60 00000000         
+   61 00000000         ;PORT M
+   62 00000000 00001000 
+                       GPIO_PORTM
+                               EQU              2_1000000000000
+   63 00000000 40063000 
+                       GPIO_PORTM_DATA_BITS_R
+                               EQU              0x40063000
+   64 00000000 400633FC 
+                       GPIO_PORTM_DATA_R
+                               EQU              0x400633FC
+   65 00000000 40063400 
+                       GPIO_PORTM_DIR_R
+                               EQU              0x40063400
+   66 00000000 40063404 
+                       GPIO_PORTM_IS_R
+                               EQU              0x40063404
+   67 00000000 40063408 
+                       GPIO_PORTM_IBE_R
+                               EQU              0x40063408
+   68 00000000 4006340C 
+                       GPIO_PORTM_IEV_R
+                               EQU              0x4006340C
+   69 00000000 40063410 
+                       GPIO_PORTM_IM_R
+                               EQU              0x40063410
+   70 00000000 40063414 
+                       GPIO_PORTM_RIS_R
+                               EQU              0x40063414
+   71 00000000 40063418 
+                       GPIO_PORTM_MIS_R
+                               EQU              0x40063418
+   72 00000000 4006341C 
+
+
+
+ARM Macro Assembler    Page 4 
+
+
+                       GPIO_PORTM_ICR_R
+                               EQU              0x4006341C
+   73 00000000 40063420 
+                       GPIO_PORTM_AFSEL_R
+                               EQU              0x40063420
+   74 00000000 40063500 
+                       GPIO_PORTM_DR2R_R
+                               EQU              0x40063500
+   75 00000000 40063504 
+                       GPIO_PORTM_DR4R_R
+                               EQU              0x40063504
+   76 00000000 40063508 
+                       GPIO_PORTM_DR8R_R
+                               EQU              0x40063508
+   77 00000000 4006350C 
+                       GPIO_PORTM_ODR_R
+                               EQU              0x4006350C
+   78 00000000 40063510 
+                       GPIO_PORTM_PUR_R
+                               EQU              0x40063510
+   79 00000000 40063514 
+                       GPIO_PORTM_PDR_R
+                               EQU              0x40063514
+   80 00000000 40063518 
+                       GPIO_PORTM_SLR_R
+                               EQU              0x40063518
+   81 00000000 4006351C 
+                       GPIO_PORTM_DEN_R
+                               EQU              0x4006351C
+   82 00000000 40063520 
+                       GPIO_PORTM_LOCK_R
+                               EQU              0x40063520
+   83 00000000 40063524 
+                       GPIO_PORTM_CR_R
+                               EQU              0x40063524
+   84 00000000 40063528 
+                       GPIO_PORTM_AMSEL_R
+                               EQU              0x40063528
+   85 00000000 4006352C 
+                       GPIO_PORTM_PCTL_R
+                               EQU              0x4006352C
+   86 00000000 40063530 
+                       GPIO_PORTM_ADCCTL_R
+                               EQU              0x40063530
+   87 00000000 40063534 
+                       GPIO_PORTM_DMACTL_R
+                               EQU              0x40063534
+   88 00000000 40063538 
+                       GPIO_PORTM_SI_R
+                               EQU              0x40063538
+   89 00000000 4006353C 
+                       GPIO_PORTM_DR12R_R
+                               EQU              0x4006353C
+   90 00000000 40063540 
+                       GPIO_PORTM_WAKEPEN_R
+                               EQU              0x40063540
+   91 00000000 40063544 
+                       GPIO_PORTM_WAKELVL_R
+                               EQU              0x40063544
+
+
+
+ARM Macro Assembler    Page 5 
+
+
+   92 00000000 40063548 
+                       GPIO_PORTM_WAKESTAT_R
+                               EQU              0x40063548
+   93 00000000 40063FC0 
+                       GPIO_PORTM_PP_R
+                               EQU              0x40063FC0
+   94 00000000 40063FC4 
+                       GPIO_PORTM_PC_R
+                               EQU              0x40063FC4
+   95 00000000         
+   96 00000000         ; ------------------------------------------------------
+                       -------------------------
+   97 00000000         ; Area de Codigo - Tudo abaixo da diretiva a seguir sera
+                        armazenado na memoria de 
+   98 00000000         ; codigo
+   99 00000000                 AREA             |.text|, CODE, READONLY, ALIGN=
+2
+  100 00000000         
+  101 00000000         ; Se alguma funcao do arquivo for chamada em outro arqui
+                       vo 
+  102 00000000                 EXPORT           MKBOARD_init
+  103 00000000                 EXPORT           MKBOARD_getValuePressed
+  104 00000000                 EXPORT           MKBOARD_valueToASCII
+  105 00000000         
+  106 00000000                 IMPORT           SysTick_Wait1us
+  107 00000000                 IMPORT           SysTick_Wait1ms
+  108 00000000         
+  109 00000000         ;-------------------------------------------------------
+                       -------------------------
+  110 00000000         ; Funcao MKBOARD_init
+  111 00000000         ; Parametro de entrada: Nao tem
+  112 00000000         ; Parametro de saida: Nao tem
+  113 00000000         MKBOARD_init
+  114 00000000         ;=====================
+  115 00000000         ;FALTA IMPLEMENTAR ESCRITA AMIGAVEL DAQUI PARA BAIXO!!!!
+                       !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+  116 00000000         ; VER arquivo LCD.S
+  117 00000000         ; 1. Ativar o clock para a porta setando o bit correspon
+                       dente no registrador RCGCGPIO,
+  118 00000000 487E            LDR              R0, =SYSCTL_RCGCGPIO_R ;Carrega
+                                                             o endereço do regi
+                                                            strador RCGCGPIO
+  119 00000002 6801            LDR              R1, [R0]
+  120 00000004 F441 6180       ORR              R1, #GPIO_PORTL ; teclado - PIN
+                                                            OS LINHAS 
+  121 00000008 F441 5180       ORR              R1, #GPIO_PORTM ; teclado - PIN
+                                                            OS COLUNAS
+  122 0000000C 6001            STR              R1, [R0]    ;Move para a memóri
+                                                            a os bits das porta
+                                                            s no endereço do RC
+                                                            GCGPIO
+  123 0000000E         
+  124 0000000E         ; verificar no PRGPIO se a porta está pronta para uso.
+  125 0000000E 487C            LDR              R0, =SYSCTL_PRGPIO_R ;Carrega o
+                                                             endereço do PRGPIO
+                                                             para esperar os GP
+                                                            IO ficarem prontos
+  126 00000010         Espera_Porta
+  127 00000010 6801            LDR              R1, [R0]    ;Lê da memória o co
+
+
+
+ARM Macro Assembler    Page 6 
+
+
+                                                            nteúdo do endereço 
+                                                            do registrador
+  128 00000012 F44F 6280       MOV              R2, #GPIO_PORTL
+  129 00000016 F442 5280       ORR              R2, #GPIO_PORTM
+  130 0000001A EA01 0102       AND              R1, R1, R2  ;seleciona apenas o
+                                                            s bits das portas r
+                                                            eferentes
+  131 0000001E 4211            TST              R1, R2      ;compara se os bits
+                                                             estao iguais
+  132 00000020 D0F6            BEQ              Espera_Porta ;Se o flag Z=1, vo
+                                                            lta para o laço. Se
+                                                            não continua execut
+                                                            ando
+  133 00000022         
+  134 00000022         ; 2. Limpar o AMSEL para desabilitar a analógica
+  135 00000022 4878            LDR              R0, =GPIO_PORTL_AMSEL_R
+  136 00000024 6801            LDR              R1, [R0]
+  137 00000026 F021 010F       BIC              R1, #0xF    ; L0 a L3 = 0 : des
+                                                            abilita analogica
+  138 0000002A 6001            STR              R1, [R0]
+  139 0000002C         
+  140 0000002C 4876            LDR              R0, =GPIO_PORTM_AMSEL_R
+  141 0000002E 6801            LDR              R1, [R0]
+  142 00000030 F021 01F0       BIC              R1, #0xF0   ; M4 a M7 = 0 : des
+                                                            abilita analogica
+  143 00000034 6001            STR              R1, [R0]
+  144 00000036         
+  145 00000036         ; 3. Limpar PCTL para selecionar o GPIO
+  146 00000036 4875            LDR              R0, =GPIO_PORTL_PCTL_R
+  147 00000038 6801            LDR              R1, [R0]
+  148 0000003A F021 010F       BIC              R1, R1, #0xF ;L0 a L3 = 0: sele
+                                                            ciona modo GPIO
+  149 0000003E 6001            STR              R1, [R0]
+  150 00000040         
+  151 00000040 4873            LDR              R0, =GPIO_PORTM_PCTL_R
+  152 00000042 6801            LDR              R1, [R0]
+  153 00000044 F021 01F0       BIC              R1, R1, #0xF0 ;M4 a M7 = 0: sel
+                                                            eciona modo GPIO
+  154 00000048 6001            STR              R1, [R0]
+  155 0000004A         
+  156 0000004A         ; 4. DIR para 0: input (BIC), 1: output (ORR)
+  157 0000004A 4872            LDR              R0, =GPIO_PORTL_DIR_R
+  158 0000004C 6801            LDR              R1, [R0]
+  159 0000004E F021 010F       BIC              R1, R1, #0xF 
+                                                            ;L0 a L3 = 0: INPUT
+                                                            
+  160 00000052 6001            STR              R1, [R0]
+  161 00000054         
+  162 00000054 4870            LDR              R0, =GPIO_PORTM_DIR_R
+  163 00000056 6801            LDR              R1, [R0]
+  164 00000058 F041 01F0       ORR              R1, R1, #0xF0 ;M4 a M7 = 1: OUT
+                                                            PUT
+  165 0000005C 6001            STR              R1, [R0]
+  166 0000005E         
+  167 0000005E         ; 5. Limpar os bits AFSEL para 0 para selecionar GPIO se
+                       m função alternativa
+  168 0000005E 486F            LDR              R0, =GPIO_PORTL_AFSEL_R
+  169 00000060 6801            LDR              R1, [R0]
+  170 00000062 F021 010F       BIC              R1, R1, #0xF ;L0 a L3 = 0: sem 
+
+
+
+ARM Macro Assembler    Page 7 
+
+
+                                                            funcao alternativa
+  171 00000066 6001            STR              R1, [R0]
+  172 00000068 486D            LDR              R0, =GPIO_PORTM_AFSEL_R
+  173 0000006A 6801            LDR              R1, [R0]
+  174 0000006C F021 01F0       BIC              R1, R1, #0xF0 ;M4 a M7 = 0: sem
+                                                             funcao alternativa
+                                                            
+  175 00000070 6001            STR              R1, [R0]
+  176 00000072         
+  177 00000072         ; 6. Setar os bits de DEN para habilitar I/O digital
+  178 00000072 486C            LDR              R0, =GPIO_PORTL_DEN_R ;carrega 
+                                                            o endereço do DEN
+  179 00000074 6801            LDR              R1, [R0]
+  180 00000076 F041 010F       ORR              R1, R1, #0xF ;L0 a L3 = 1: habi
+                                                            lita I/O digital
+  181 0000007A 6001            STR              R1, [R0]
+  182 0000007C         
+  183 0000007C 486A            LDR              R0, =GPIO_PORTM_DEN_R
+  184 0000007E 6801            LDR              R1, [R0]
+  185 00000080 F041 01F0       ORR              R1, R1, #0xF0 ;M4 a M7 = 1: hab
+                                                            ilita I/O digital
+  186 00000084 6001            STR              R1, [R0]
+  187 00000086         
+  188 00000086         ; 7. Para habilitar resistor de pull-up interno, setar P
+                       UR para 1
+  189 00000086 4869            LDR              R0, =GPIO_PORTL_PUR_R ;Carrega 
+                                                            o endereço do PUR
+  190 00000088 6801            LDR              R1, [R0]
+  191 0000008A F041 010F       ORR              R1, R1, #0xF ;L0 a L3 = 1: habi
+                                                            lita funcionalidade
+                                                             digital de resisto
+                                                            r de pull-up
+  192 0000008E 6001            STR              R1, [R0]
+  193 00000090         
+  194 00000090 4770            BX               LR          ;return
+  195 00000092         
+  196 00000092         ;-------------------------------------------------------
+                       -------------------------
+  197 00000092         ; Funcao MKBOARD_getValuePressed
+  198 00000092         ; Parametro de entrada: Nao tem
+  199 00000092         ; Parametro de saida: R0:
+  200 00000092         ; 1: 0x1 ;2: 0x2  ; ...
+  201 00000092         ; A: 0xA ;...  ; D: 0xD ; *: 0xE ; #: 0xF
+  202 00000092         ; nenhuma tecla pressionada: 0xFF
+  203 00000092         MKBOARD_getValuePressed
+  204 00000092 B47E            PUSH             {R1, R2, R3, R4, R5, R6} ;armaz
+                                                            ena registradores u
+                                                            tilizados
+  205 00000094         
+  206 00000094         init_count_deboucing
+  207 00000094 F04F 0100       MOV              R1, #0      ;reseta contador de
+                                                             deboucing
+  208 00000098 F04F 0280       MOV              R2, #2_10000000 
+                                                            ;inicia na coluna 4
+                                                            
+  209 0000009C         set_column
+  210 0000009C 4D64            LDR              R5, =GPIO_PORTM_DATA_R ;Colunas
+                                                            
+  211 0000009E 682E            LDR              R6, [R5]    ;pega dados da port
+
+
+
+ARM Macro Assembler    Page 8 
+
+
+                                                            a M (coluna)
+  212 000000A0 F006 06F0       AND              R6, #0xF0   ;seleciona apenas o
+                                                            s bits de 4 a 7
+  213 000000A4 F046 06F0       ORR              R6, #0xF0   ;seta apenas os bit
+                                                            s de 4 a 7
+  214 000000A8 EA26 0602       BIC              R6, R2      ;limpa apenas o bit
+                                                             da coluna
+  215 000000AC 602E            STR              R6, [R5]    ;seta coluna a ser 
+                                                            lida
+  216 000000AE         
+  217 000000AE 4D61            LDR              R5, =GPIO_PORTL_DATA_R ;Linhas
+  218 000000B0 682B            LDR              R3, [R5]    ;pega dados da port
+                                                            a L (linha)
+  219 000000B2 F003 030F       AND              R3, #0xF    ;captura apenas os 
+                                                            primeiros 4 bits (l
+                                                            inhas)
+  220 000000B6 2B0E            CMP              R3, #2_1110
+  221 000000B8 D00C            BEQ              check_boucing ;se primeira linh
+                                                            a pressionada
+  222 000000BA 2B0D            CMP              R3, #2_1101
+  223 000000BC D00A            BEQ              check_boucing ;se segunda linha
+                                                             pressionada
+  224 000000BE 2B0B            CMP              R3, #2_1011
+  225 000000C0 D008            BEQ              check_boucing ;se terceira linh
+                                                            a pressionada
+  226 000000C2 2B07            CMP              R3, #2_0111
+  227 000000C4 D006            BEQ              check_boucing ;se quarta linha 
+                                                            pressionada
+  228 000000C6         
+  229 000000C6 EA4F 0252       LSR              R2, #1      ;shifta 1 bit
+  230 000000CA 2A08            CMP              R2, #2_00001000 ;verifica se te
+                                                            rminou as colunas
+  231 000000CC D1E6            BNE              set_column
+  232 000000CE         ; se terminou as colunas, entao nenhuma tecla foi pressi
+                       onada
+  233 000000CE F04F 00FF       MOV              R0, #0xFF
+  234 000000D2 E052            B                return_MKBOARD_getValuePressed
+  235 000000D4         
+  236 000000D4         check_boucing
+  237 000000D4         ; espera 5ms
+  238 000000D4 F04F 0005       MOV              R0, #5
+  239 000000D8 B500            PUSH             {LR}
+  240 000000DA F7FF FFFE       BL               SysTick_Wait1ms
+  241 000000DE F85D EB04       POP              {LR}
+  242 000000E2         
+  243 000000E2         ; verifica se o botao ainda continua pressionado
+  244 000000E2 4D54            LDR              R5, =GPIO_PORTL_DATA_R ;Linhas
+  245 000000E4 682C            LDR              R4, [R5]    ;captura novamente 
+                                                            a linha e coluna pr
+                                                            essionada
+  246 000000E6 F004 040F       AND              R4, #0xF    ;captura apenas os 
+                                                            primeiros 4 bits
+  247 000000EA 42A3            CMP              R3, R4      ;verifica se contin
+                                                            ua igual
+  248 000000EC D1D2            BNE              init_count_deboucing ;se nao co
+                                                            ntinua, reseta o co
+                                                            ntador
+  249 000000EE F101 0101       ADD              R1, #1      ;soma 1 ao contador
+                                                            
+
+
+
+ARM Macro Assembler    Page 9 
+
+
+  250 000000F2 2914            CMP              R1, #20     ;verifica se atingi
+                                                            u valor estavel
+  251 000000F4 D1EE            BNE              check_boucing ;se nao atingiu, 
+                                                            verifica novamente
+  252 000000F6         
+  253 000000F6         select_value
+  254 000000F6         ; pega define o botao que foi pressionado
+  255 000000F6 F04F 0000       MOV              R0, #0
+  256 000000FA EA42 0003       ORR              R0, R2, R3  ; R0 = C|L
+  257 000000FE 281E            CMP              R0, #2_00011110 ; C1, L1
+  258 00000100 BF04            ITT              EQ
+  259 00000102 2001            MOVEQ            R0, #0x1
+  260 00000104 E039            BEQ              return_MKBOARD_getValuePressed
+  261 00000106 281D            CMP              R0, #2_00011101 ; C1, L2
+  262 00000108 BF04            ITT              EQ
+  263 0000010A 2004            MOVEQ            R0, #0x4
+  264 0000010C E035            BEQ              return_MKBOARD_getValuePressed
+  265 0000010E 281B            CMP              R0, #2_00011011 ; C1, L3
+  266 00000110 BF04            ITT              EQ
+  267 00000112 2007            MOVEQ            R0, #0x7
+  268 00000114 E031            BEQ              return_MKBOARD_getValuePressed
+  269 00000116 2817            CMP              R0, #2_00010111 ; C1, L4
+  270 00000118 BF04            ITT              EQ
+  271 0000011A 200E            MOVEQ            R0, #0xE    ; *
+  272 0000011C E02D            BEQ              return_MKBOARD_getValuePressed
+  273 0000011E 282E            CMP              R0, #2_00101110 ; C2, L1
+  274 00000120 BF04            ITT              EQ
+  275 00000122 2002            MOVEQ            R0, #0x2
+  276 00000124 E029            BEQ              return_MKBOARD_getValuePressed
+  277 00000126 282D            CMP              R0, #2_00101101 ; C2, L2
+  278 00000128 BF04            ITT              EQ
+  279 0000012A 2005            MOVEQ            R0, #0x5
+  280 0000012C E025            BEQ              return_MKBOARD_getValuePressed
+  281 0000012E 282B            CMP              R0, #2_00101011 ; C2, L3
+  282 00000130 BF04            ITT              EQ
+  283 00000132 2008            MOVEQ            R0, #0x8
+  284 00000134 E021            BEQ              return_MKBOARD_getValuePressed
+  285 00000136 2827            CMP              R0, #2_00100111 ; C2, L4
+  286 00000138 BF04            ITT              EQ
+  287 0000013A 2000            MOVEQ            R0, #0x0
+  288 0000013C E01D            BEQ              return_MKBOARD_getValuePressed
+  289 0000013E 284E            CMP              R0, #2_01001110 ; C3, L1
+  290 00000140 BF04            ITT              EQ
+  291 00000142 2003            MOVEQ            R0, #0x3
+  292 00000144 E019            BEQ              return_MKBOARD_getValuePressed
+  293 00000146 284D            CMP              R0, #2_01001101 ; C3, L2
+  294 00000148 BF04            ITT              EQ
+  295 0000014A 2006            MOVEQ            R0, #0x6
+  296 0000014C E015            BEQ              return_MKBOARD_getValuePressed
+  297 0000014E 284B            CMP              R0, #2_01001011 ; C3, L3
+  298 00000150 BF04            ITT              EQ
+  299 00000152 2009            MOVEQ            R0, #0x9
+  300 00000154 E011            BEQ              return_MKBOARD_getValuePressed
+  301 00000156 2847            CMP              R0, #2_01000111 ; C3, L4
+  302 00000158 BF04            ITT              EQ
+  303 0000015A 200F            MOVEQ            R0, #0xF    ; #
+  304 0000015C E00D            BEQ              return_MKBOARD_getValuePressed
+  305 0000015E 288E            CMP              R0, #2_10001110 ; C4, L1
+  306 00000160 BF04            ITT              EQ
+
+
+
+ARM Macro Assembler    Page 10 
+
+
+  307 00000162 200A            MOVEQ            R0, #0xA
+  308 00000164 E009            BEQ              return_MKBOARD_getValuePressed
+  309 00000166 288D            CMP              R0, #2_10001101 ; C4, L2
+  310 00000168 BF04            ITT              EQ
+  311 0000016A 200B            MOVEQ            R0, #0xB
+  312 0000016C E005            BEQ              return_MKBOARD_getValuePressed
+  313 0000016E 288B            CMP              R0, #2_10001011 ; C4, L3
+  314 00000170 BF04            ITT              EQ
+  315 00000172 200C            MOVEQ            R0, #0xC
+  316 00000174 E001            BEQ              return_MKBOARD_getValuePressed
+  317 00000176 F04F 000D       MOV              R0, #0xD
+  318 0000017A         
+  319 0000017A         return_MKBOARD_getValuePressed
+  320 0000017A BC7E            POP              {R1, R2, R3, R4, R5, R6}
+  321 0000017C 4770            BX               LR          ;return
+  322 0000017E         
+  323 0000017E         ;-------------------------------------------------------
+                       -------------------------
+  324 0000017E         ; Funcao MKBOARD_valueToASCII
+  325 0000017E         ; Parametro de entrada: R0: Valor em exadecimal
+  326 0000017E         ; Parametro de saida: R0: Valor em ASCII
+  327 0000017E         ; Valores diferentes: 
+  328 0000017E         ; A: 0xA ;...  ; D: 0xD ; *: 0xE ; #: 0xF
+  329 0000017E         ; nenhuma tecla pressionada: 0xFF
+  330 0000017E         MKBOARD_valueToASCII
+  331 0000017E 2800            CMP              R0, #0x0
+  332 00000180 BF04            ITT              EQ
+  333 00000182 2030            MOVEQ            R0, #'0'
+  334 00000184 E039            BEQ              return_valueToASCII
+  335 00000186 2801            CMP              R0, #0x1
+  336 00000188 BF04            ITT              EQ
+  337 0000018A 2031            MOVEQ            R0, #'1'
+  338 0000018C E035            BEQ              return_valueToASCII
+  339 0000018E 2802            CMP              R0, #0x2
+  340 00000190 BF04            ITT              EQ
+  341 00000192 2032            MOVEQ            R0, #'2'
+  342 00000194 E031            BEQ              return_valueToASCII
+  343 00000196 2803            CMP              R0, #0x3
+  344 00000198 BF04            ITT              EQ
+  345 0000019A 2033            MOVEQ            R0, #'3'
+  346 0000019C E02D            BEQ              return_valueToASCII
+  347 0000019E 2804            CMP              R0, #0x4
+  348 000001A0 BF04            ITT              EQ
+  349 000001A2 2034            MOVEQ            R0, #'4'
+  350 000001A4 E029            BEQ              return_valueToASCII
+  351 000001A6 2805            CMP              R0, #0x5
+  352 000001A8 BF04            ITT              EQ
+  353 000001AA 2035            MOVEQ            R0, #'5'
+  354 000001AC E025            BEQ              return_valueToASCII
+  355 000001AE 2806            CMP              R0, #0x6
+  356 000001B0 BF04            ITT              EQ
+  357 000001B2 2036            MOVEQ            R0, #'6'
+  358 000001B4 E021            BEQ              return_valueToASCII
+  359 000001B6 2807            CMP              R0, #0x7
+  360 000001B8 BF04            ITT              EQ
+  361 000001BA 2037            MOVEQ            R0, #'7'
+  362 000001BC E01D            BEQ              return_valueToASCII
+  363 000001BE 2808            CMP              R0, #0x8
+  364 000001C0 BF04            ITT              EQ
+
+
+
+ARM Macro Assembler    Page 11 
+
+
+  365 000001C2 2038            MOVEQ            R0, #'8'
+  366 000001C4 E019            BEQ              return_valueToASCII
+  367 000001C6 2809            CMP              R0, #0x9
+  368 000001C8 BF04            ITT              EQ
+  369 000001CA 2039            MOVEQ            R0, #'9'
+  370 000001CC E015            BEQ              return_valueToASCII
+  371 000001CE 280A            CMP              R0, #0xA
+  372 000001D0 BF04            ITT              EQ
+  373 000001D2 2041            MOVEQ            R0, #'A'
+  374 000001D4 E011            BEQ              return_valueToASCII
+  375 000001D6 280B            CMP              R0, #0xB
+  376 000001D8 BF04            ITT              EQ
+  377 000001DA 2042            MOVEQ            R0, #'B'
+  378 000001DC E00D            BEQ              return_valueToASCII
+  379 000001DE 280C            CMP              R0, #0xC
+  380 000001E0 BF04            ITT              EQ
+  381 000001E2 2043            MOVEQ            R0, #'C'
+  382 000001E4 E009            BEQ              return_valueToASCII
+  383 000001E6 280D            CMP              R0, #0xD
+  384 000001E8 BF04            ITT              EQ
+  385 000001EA 2044            MOVEQ            R0, #'D'
+  386 000001EC E005            BEQ              return_valueToASCII
+  387 000001EE 280E            CMP              R0, #0xE
+  388 000001F0 BF04            ITT              EQ
+  389 000001F2 2045            MOVEQ            R0, #'E'
+  390 000001F4 E001            BEQ              return_valueToASCII
+  391 000001F6 F04F 0046       MOV              R0, #'F'
+  392 000001FA         return_valueToASCII
+  393 000001FA 4770            BX               LR          ; return
+  394 000001FC         
+  395 000001FC         ; ------------------------------------------------------
+                       -------------------------
+  396 000001FC         ; fim do arquivo
+  397 000001FC                 ALIGN                        ; garante que o fim
+                                                             da se??o est? alin
+                                                            hada 
+  398 000001FC                 END                          ; fim do arquivo
+              400FE608 
+              400FEA08 
+              40062528 
+              40063528 
+              4006252C 
+              4006352C 
+              40062400 
+              40063400 
+              40062420 
+              40063420 
+              4006251C 
+              4006351C 
+              40062510 
+              400633FC 
+              400623FC 
+Command Line: --debug --xref --diag_suppress=9931 --cpu=Cortex-M4.fp.sp --apcs=
+interwork --depend=.\objects\matrix_keyboard.d -o.\objects\matrix_keyboard.o -I
+C:\Users\roger\AppData\Local\Arm\Packs\Keil\TM4C_DFP\1.1.0\Device\Include\TM4C1
+29 --predefine="__EVAL SETA 1" --predefine="__UVISION_VERSION SETA 536" --prede
+fine="TM4C1294NCPDT SETA 1" --list=.\listings\matrix_keyboard.lst matrix_keyboa
+rd.s
+
+
+
+ARM Macro Assembler    Page 1 Alphabetic symbol ordering
+Relocatable symbols
+
+.text 00000000
+
+Symbol: .text
+   Definitions
+      At line 99 in file matrix_keyboard.s
+   Uses
+      None
+Comment: .text unused
+Espera_Porta 00000010
+
+Symbol: Espera_Porta
+   Definitions
+      At line 126 in file matrix_keyboard.s
+   Uses
+      At line 132 in file matrix_keyboard.s
+Comment: Espera_Porta used once
+MKBOARD_getValuePressed 00000092
+
+Symbol: MKBOARD_getValuePressed
+   Definitions
+      At line 203 in file matrix_keyboard.s
+   Uses
+      At line 103 in file matrix_keyboard.s
+Comment: MKBOARD_getValuePressed used once
+MKBOARD_init 00000000
+
+Symbol: MKBOARD_init
+   Definitions
+      At line 113 in file matrix_keyboard.s
+   Uses
+      At line 102 in file matrix_keyboard.s
+Comment: MKBOARD_init used once
+MKBOARD_valueToASCII 0000017E
+
+Symbol: MKBOARD_valueToASCII
+   Definitions
+      At line 330 in file matrix_keyboard.s
+   Uses
+      At line 104 in file matrix_keyboard.s
+Comment: MKBOARD_valueToASCII used once
+check_boucing 000000D4
+
+Symbol: check_boucing
+   Definitions
+      At line 236 in file matrix_keyboard.s
+   Uses
+      At line 221 in file matrix_keyboard.s
+      At line 223 in file matrix_keyboard.s
+      At line 225 in file matrix_keyboard.s
+      At line 227 in file matrix_keyboard.s
+      At line 251 in file matrix_keyboard.s
+
+init_count_deboucing 00000094
+
+Symbol: init_count_deboucing
+   Definitions
+      At line 206 in file matrix_keyboard.s
+   Uses
+      At line 248 in file matrix_keyboard.s
+
+
+
+ARM Macro Assembler    Page 2 Alphabetic symbol ordering
+Relocatable symbols
+
+Comment: init_count_deboucing used once
+return_MKBOARD_getValuePressed 0000017A
+
+Symbol: return_MKBOARD_getValuePressed
+   Definitions
+      At line 319 in file matrix_keyboard.s
+   Uses
+      At line 234 in file matrix_keyboard.s
+      At line 260 in file matrix_keyboard.s
+      At line 264 in file matrix_keyboard.s
+      At line 268 in file matrix_keyboard.s
+      At line 272 in file matrix_keyboard.s
+      At line 276 in file matrix_keyboard.s
+      At line 280 in file matrix_keyboard.s
+      At line 284 in file matrix_keyboard.s
+      At line 288 in file matrix_keyboard.s
+      At line 292 in file matrix_keyboard.s
+      At line 296 in file matrix_keyboard.s
+      At line 300 in file matrix_keyboard.s
+      At line 304 in file matrix_keyboard.s
+      At line 308 in file matrix_keyboard.s
+      At line 312 in file matrix_keyboard.s
+      At line 316 in file matrix_keyboard.s
+
+return_valueToASCII 000001FA
+
+Symbol: return_valueToASCII
+   Definitions
+      At line 392 in file matrix_keyboard.s
+   Uses
+      At line 334 in file matrix_keyboard.s
+      At line 338 in file matrix_keyboard.s
+      At line 342 in file matrix_keyboard.s
+      At line 346 in file matrix_keyboard.s
+      At line 350 in file matrix_keyboard.s
+      At line 354 in file matrix_keyboard.s
+      At line 358 in file matrix_keyboard.s
+      At line 362 in file matrix_keyboard.s
+      At line 366 in file matrix_keyboard.s
+      At line 370 in file matrix_keyboard.s
+      At line 374 in file matrix_keyboard.s
+      At line 378 in file matrix_keyboard.s
+      At line 382 in file matrix_keyboard.s
+      At line 386 in file matrix_keyboard.s
+      At line 390 in file matrix_keyboard.s
+
+select_value 000000F6
+
+Symbol: select_value
+   Definitions
+      At line 253 in file matrix_keyboard.s
+   Uses
+      None
+Comment: select_value unused
+set_column 0000009C
+
+Symbol: set_column
+   Definitions
+      At line 209 in file matrix_keyboard.s
+
+
+
+ARM Macro Assembler    Page 3 Alphabetic symbol ordering
+Relocatable symbols
+
+   Uses
+      At line 231 in file matrix_keyboard.s
+Comment: set_column used once
+11 symbols
+
+
+
+ARM Macro Assembler    Page 1 Alphabetic symbol ordering
+Absolute symbols
+
+COLUMN_1 00000080
+
+Symbol: COLUMN_1
+   Definitions
+      At line 14 in file matrix_keyboard.s
+   Uses
+      None
+Comment: COLUMN_1 unused
+COLUMN_2 00000040
+
+Symbol: COLUMN_2
+   Definitions
+      At line 15 in file matrix_keyboard.s
+   Uses
+      None
+Comment: COLUMN_2 unused
+COLUMN_3 00000020
+
+Symbol: COLUMN_3
+   Definitions
+      At line 16 in file matrix_keyboard.s
+   Uses
+      None
+Comment: COLUMN_3 unused
+COLUMN_4 00000010
+
+Symbol: COLUMN_4
+   Definitions
+      At line 17 in file matrix_keyboard.s
+   Uses
+      None
+Comment: COLUMN_4 unused
+GPIO_PORTL 00000400
+
+Symbol: GPIO_PORTL
+   Definitions
+      At line 27 in file matrix_keyboard.s
+   Uses
+      At line 120 in file matrix_keyboard.s
+      At line 128 in file matrix_keyboard.s
+
+GPIO_PORTL_ADCCTL_R 40062530
+
+Symbol: GPIO_PORTL_ADCCTL_R
+   Definitions
+      At line 51 in file matrix_keyboard.s
+   Uses
+      None
+Comment: GPIO_PORTL_ADCCTL_R unused
+GPIO_PORTL_AFSEL_R 40062420
+
+Symbol: GPIO_PORTL_AFSEL_R
+   Definitions
+      At line 38 in file matrix_keyboard.s
+   Uses
+      At line 168 in file matrix_keyboard.s
+Comment: GPIO_PORTL_AFSEL_R used once
+GPIO_PORTL_AMSEL_R 40062528
+
+
+
+
+ARM Macro Assembler    Page 2 Alphabetic symbol ordering
+Absolute symbols
+
+Symbol: GPIO_PORTL_AMSEL_R
+   Definitions
+      At line 49 in file matrix_keyboard.s
+   Uses
+      At line 135 in file matrix_keyboard.s
+Comment: GPIO_PORTL_AMSEL_R used once
+GPIO_PORTL_CR_R 40062524
+
+Symbol: GPIO_PORTL_CR_R
+   Definitions
+      At line 48 in file matrix_keyboard.s
+   Uses
+      None
+Comment: GPIO_PORTL_CR_R unused
+GPIO_PORTL_DATA_BITS_R 40062000
+
+Symbol: GPIO_PORTL_DATA_BITS_R
+   Definitions
+      At line 28 in file matrix_keyboard.s
+   Uses
+      None
+Comment: GPIO_PORTL_DATA_BITS_R unused
+GPIO_PORTL_DATA_R 400623FC
+
+Symbol: GPIO_PORTL_DATA_R
+   Definitions
+      At line 29 in file matrix_keyboard.s
+   Uses
+      At line 217 in file matrix_keyboard.s
+      At line 244 in file matrix_keyboard.s
+
+GPIO_PORTL_DEN_R 4006251C
+
+Symbol: GPIO_PORTL_DEN_R
+   Definitions
+      At line 46 in file matrix_keyboard.s
+   Uses
+      At line 178 in file matrix_keyboard.s
+Comment: GPIO_PORTL_DEN_R used once
+GPIO_PORTL_DIR_R 40062400
+
+Symbol: GPIO_PORTL_DIR_R
+   Definitions
+      At line 30 in file matrix_keyboard.s
+   Uses
+      At line 157 in file matrix_keyboard.s
+Comment: GPIO_PORTL_DIR_R used once
+GPIO_PORTL_DMACTL_R 40062534
+
+Symbol: GPIO_PORTL_DMACTL_R
+   Definitions
+      At line 52 in file matrix_keyboard.s
+   Uses
+      None
+Comment: GPIO_PORTL_DMACTL_R unused
+GPIO_PORTL_DR12R_R 4006253C
+
+Symbol: GPIO_PORTL_DR12R_R
+   Definitions
+
+
+
+ARM Macro Assembler    Page 3 Alphabetic symbol ordering
+Absolute symbols
+
+      At line 54 in file matrix_keyboard.s
+   Uses
+      None
+Comment: GPIO_PORTL_DR12R_R unused
+GPIO_PORTL_DR2R_R 40062500
+
+Symbol: GPIO_PORTL_DR2R_R
+   Definitions
+      At line 39 in file matrix_keyboard.s
+   Uses
+      None
+Comment: GPIO_PORTL_DR2R_R unused
+GPIO_PORTL_DR4R_R 40062504
+
+Symbol: GPIO_PORTL_DR4R_R
+   Definitions
+      At line 40 in file matrix_keyboard.s
+   Uses
+      None
+Comment: GPIO_PORTL_DR4R_R unused
+GPIO_PORTL_DR8R_R 40062508
+
+Symbol: GPIO_PORTL_DR8R_R
+   Definitions
+      At line 41 in file matrix_keyboard.s
+   Uses
+      None
+Comment: GPIO_PORTL_DR8R_R unused
+GPIO_PORTL_IBE_R 40062408
+
+Symbol: GPIO_PORTL_IBE_R
+   Definitions
+      At line 32 in file matrix_keyboard.s
+   Uses
+      None
+Comment: GPIO_PORTL_IBE_R unused
+GPIO_PORTL_ICR_R 4006241C
+
+Symbol: GPIO_PORTL_ICR_R
+   Definitions
+      At line 37 in file matrix_keyboard.s
+   Uses
+      None
+Comment: GPIO_PORTL_ICR_R unused
+GPIO_PORTL_IEV_R 4006240C
+
+Symbol: GPIO_PORTL_IEV_R
+   Definitions
+      At line 33 in file matrix_keyboard.s
+   Uses
+      None
+Comment: GPIO_PORTL_IEV_R unused
+GPIO_PORTL_IM_R 40062410
+
+Symbol: GPIO_PORTL_IM_R
+   Definitions
+      At line 34 in file matrix_keyboard.s
+   Uses
+      None
+
+
+
+ARM Macro Assembler    Page 4 Alphabetic symbol ordering
+Absolute symbols
+
+Comment: GPIO_PORTL_IM_R unused
+GPIO_PORTL_IS_R 40062404
+
+Symbol: GPIO_PORTL_IS_R
+   Definitions
+      At line 31 in file matrix_keyboard.s
+   Uses
+      None
+Comment: GPIO_PORTL_IS_R unused
+GPIO_PORTL_LOCK_R 40062520
+
+Symbol: GPIO_PORTL_LOCK_R
+   Definitions
+      At line 47 in file matrix_keyboard.s
+   Uses
+      None
+Comment: GPIO_PORTL_LOCK_R unused
+GPIO_PORTL_MIS_R 40062418
+
+Symbol: GPIO_PORTL_MIS_R
+   Definitions
+      At line 36 in file matrix_keyboard.s
+   Uses
+      None
+Comment: GPIO_PORTL_MIS_R unused
+GPIO_PORTL_ODR_R 4006250C
+
+Symbol: GPIO_PORTL_ODR_R
+   Definitions
+      At line 42 in file matrix_keyboard.s
+   Uses
+      None
+Comment: GPIO_PORTL_ODR_R unused
+GPIO_PORTL_PCTL_R 4006252C
+
+Symbol: GPIO_PORTL_PCTL_R
+   Definitions
+      At line 50 in file matrix_keyboard.s
+   Uses
+      At line 146 in file matrix_keyboard.s
+Comment: GPIO_PORTL_PCTL_R used once
+GPIO_PORTL_PC_R 40062FC4
+
+Symbol: GPIO_PORTL_PC_R
+   Definitions
+      At line 59 in file matrix_keyboard.s
+   Uses
+      None
+Comment: GPIO_PORTL_PC_R unused
+GPIO_PORTL_PDR_R 40062514
+
+Symbol: GPIO_PORTL_PDR_R
+   Definitions
+      At line 44 in file matrix_keyboard.s
+   Uses
+      None
+Comment: GPIO_PORTL_PDR_R unused
+GPIO_PORTL_PP_R 40062FC0
+
+
+
+
+ARM Macro Assembler    Page 5 Alphabetic symbol ordering
+Absolute symbols
+
+Symbol: GPIO_PORTL_PP_R
+   Definitions
+      At line 58 in file matrix_keyboard.s
+   Uses
+      None
+Comment: GPIO_PORTL_PP_R unused
+GPIO_PORTL_PUR_R 40062510
+
+Symbol: GPIO_PORTL_PUR_R
+   Definitions
+      At line 43 in file matrix_keyboard.s
+   Uses
+      At line 189 in file matrix_keyboard.s
+Comment: GPIO_PORTL_PUR_R used once
+GPIO_PORTL_RIS_R 40062414
+
+Symbol: GPIO_PORTL_RIS_R
+   Definitions
+      At line 35 in file matrix_keyboard.s
+   Uses
+      None
+Comment: GPIO_PORTL_RIS_R unused
+GPIO_PORTL_SI_R 40062538
+
+Symbol: GPIO_PORTL_SI_R
+   Definitions
+      At line 53 in file matrix_keyboard.s
+   Uses
+      None
+Comment: GPIO_PORTL_SI_R unused
+GPIO_PORTL_SLR_R 40062518
+
+Symbol: GPIO_PORTL_SLR_R
+   Definitions
+      At line 45 in file matrix_keyboard.s
+   Uses
+      None
+Comment: GPIO_PORTL_SLR_R unused
+GPIO_PORTL_WAKELVL_R 40062544
+
+Symbol: GPIO_PORTL_WAKELVL_R
+   Definitions
+      At line 56 in file matrix_keyboard.s
+   Uses
+      None
+Comment: GPIO_PORTL_WAKELVL_R unused
+GPIO_PORTL_WAKEPEN_R 40062540
+
+Symbol: GPIO_PORTL_WAKEPEN_R
+   Definitions
+      At line 55 in file matrix_keyboard.s
+   Uses
+      None
+Comment: GPIO_PORTL_WAKEPEN_R unused
+GPIO_PORTL_WAKESTAT_R 40062548
+
+Symbol: GPIO_PORTL_WAKESTAT_R
+   Definitions
+      At line 57 in file matrix_keyboard.s
+
+
+
+ARM Macro Assembler    Page 6 Alphabetic symbol ordering
+Absolute symbols
+
+   Uses
+      None
+Comment: GPIO_PORTL_WAKESTAT_R unused
+GPIO_PORTM 00001000
+
+Symbol: GPIO_PORTM
+   Definitions
+      At line 62 in file matrix_keyboard.s
+   Uses
+      At line 121 in file matrix_keyboard.s
+      At line 129 in file matrix_keyboard.s
+
+GPIO_PORTM_ADCCTL_R 40063530
+
+Symbol: GPIO_PORTM_ADCCTL_R
+   Definitions
+      At line 86 in file matrix_keyboard.s
+   Uses
+      None
+Comment: GPIO_PORTM_ADCCTL_R unused
+GPIO_PORTM_AFSEL_R 40063420
+
+Symbol: GPIO_PORTM_AFSEL_R
+   Definitions
+      At line 73 in file matrix_keyboard.s
+   Uses
+      At line 172 in file matrix_keyboard.s
+Comment: GPIO_PORTM_AFSEL_R used once
+GPIO_PORTM_AMSEL_R 40063528
+
+Symbol: GPIO_PORTM_AMSEL_R
+   Definitions
+      At line 84 in file matrix_keyboard.s
+   Uses
+      At line 140 in file matrix_keyboard.s
+Comment: GPIO_PORTM_AMSEL_R used once
+GPIO_PORTM_CR_R 40063524
+
+Symbol: GPIO_PORTM_CR_R
+   Definitions
+      At line 83 in file matrix_keyboard.s
+   Uses
+      None
+Comment: GPIO_PORTM_CR_R unused
+GPIO_PORTM_DATA_BITS_R 40063000
+
+Symbol: GPIO_PORTM_DATA_BITS_R
+   Definitions
+      At line 63 in file matrix_keyboard.s
+   Uses
+      None
+Comment: GPIO_PORTM_DATA_BITS_R unused
+GPIO_PORTM_DATA_R 400633FC
+
+Symbol: GPIO_PORTM_DATA_R
+   Definitions
+      At line 64 in file matrix_keyboard.s
+   Uses
+      At line 210 in file matrix_keyboard.s
+
+
+
+ARM Macro Assembler    Page 7 Alphabetic symbol ordering
+Absolute symbols
+
+Comment: GPIO_PORTM_DATA_R used once
+GPIO_PORTM_DEN_R 4006351C
+
+Symbol: GPIO_PORTM_DEN_R
+   Definitions
+      At line 81 in file matrix_keyboard.s
+   Uses
+      At line 183 in file matrix_keyboard.s
+Comment: GPIO_PORTM_DEN_R used once
+GPIO_PORTM_DIR_R 40063400
+
+Symbol: GPIO_PORTM_DIR_R
+   Definitions
+      At line 65 in file matrix_keyboard.s
+   Uses
+      At line 162 in file matrix_keyboard.s
+Comment: GPIO_PORTM_DIR_R used once
+GPIO_PORTM_DMACTL_R 40063534
+
+Symbol: GPIO_PORTM_DMACTL_R
+   Definitions
+      At line 87 in file matrix_keyboard.s
+   Uses
+      None
+Comment: GPIO_PORTM_DMACTL_R unused
+GPIO_PORTM_DR12R_R 4006353C
+
+Symbol: GPIO_PORTM_DR12R_R
+   Definitions
+      At line 89 in file matrix_keyboard.s
+   Uses
+      None
+Comment: GPIO_PORTM_DR12R_R unused
+GPIO_PORTM_DR2R_R 40063500
+
+Symbol: GPIO_PORTM_DR2R_R
+   Definitions
+      At line 74 in file matrix_keyboard.s
+   Uses
+      None
+Comment: GPIO_PORTM_DR2R_R unused
+GPIO_PORTM_DR4R_R 40063504
+
+Symbol: GPIO_PORTM_DR4R_R
+   Definitions
+      At line 75 in file matrix_keyboard.s
+   Uses
+      None
+Comment: GPIO_PORTM_DR4R_R unused
+GPIO_PORTM_DR8R_R 40063508
+
+Symbol: GPIO_PORTM_DR8R_R
+   Definitions
+      At line 76 in file matrix_keyboard.s
+   Uses
+      None
+Comment: GPIO_PORTM_DR8R_R unused
+GPIO_PORTM_IBE_R 40063408
+
+
+
+
+ARM Macro Assembler    Page 8 Alphabetic symbol ordering
+Absolute symbols
+
+Symbol: GPIO_PORTM_IBE_R
+   Definitions
+      At line 67 in file matrix_keyboard.s
+   Uses
+      None
+Comment: GPIO_PORTM_IBE_R unused
+GPIO_PORTM_ICR_R 4006341C
+
+Symbol: GPIO_PORTM_ICR_R
+   Definitions
+      At line 72 in file matrix_keyboard.s
+   Uses
+      None
+Comment: GPIO_PORTM_ICR_R unused
+GPIO_PORTM_IEV_R 4006340C
+
+Symbol: GPIO_PORTM_IEV_R
+   Definitions
+      At line 68 in file matrix_keyboard.s
+   Uses
+      None
+Comment: GPIO_PORTM_IEV_R unused
+GPIO_PORTM_IM_R 40063410
+
+Symbol: GPIO_PORTM_IM_R
+   Definitions
+      At line 69 in file matrix_keyboard.s
+   Uses
+      None
+Comment: GPIO_PORTM_IM_R unused
+GPIO_PORTM_IS_R 40063404
+
+Symbol: GPIO_PORTM_IS_R
+   Definitions
+      At line 66 in file matrix_keyboard.s
+   Uses
+      None
+Comment: GPIO_PORTM_IS_R unused
+GPIO_PORTM_LOCK_R 40063520
+
+Symbol: GPIO_PORTM_LOCK_R
+   Definitions
+      At line 82 in file matrix_keyboard.s
+   Uses
+      None
+Comment: GPIO_PORTM_LOCK_R unused
+GPIO_PORTM_MIS_R 40063418
+
+Symbol: GPIO_PORTM_MIS_R
+   Definitions
+      At line 71 in file matrix_keyboard.s
+   Uses
+      None
+Comment: GPIO_PORTM_MIS_R unused
+GPIO_PORTM_ODR_R 4006350C
+
+Symbol: GPIO_PORTM_ODR_R
+   Definitions
+      At line 77 in file matrix_keyboard.s
+
+
+
+ARM Macro Assembler    Page 9 Alphabetic symbol ordering
+Absolute symbols
+
+   Uses
+      None
+Comment: GPIO_PORTM_ODR_R unused
+GPIO_PORTM_PCTL_R 4006352C
+
+Symbol: GPIO_PORTM_PCTL_R
+   Definitions
+      At line 85 in file matrix_keyboard.s
+   Uses
+      At line 151 in file matrix_keyboard.s
+Comment: GPIO_PORTM_PCTL_R used once
+GPIO_PORTM_PC_R 40063FC4
+
+Symbol: GPIO_PORTM_PC_R
+   Definitions
+      At line 94 in file matrix_keyboard.s
+   Uses
+      None
+Comment: GPIO_PORTM_PC_R unused
+GPIO_PORTM_PDR_R 40063514
+
+Symbol: GPIO_PORTM_PDR_R
+   Definitions
+      At line 79 in file matrix_keyboard.s
+   Uses
+      None
+Comment: GPIO_PORTM_PDR_R unused
+GPIO_PORTM_PP_R 40063FC0
+
+Symbol: GPIO_PORTM_PP_R
+   Definitions
+      At line 93 in file matrix_keyboard.s
+   Uses
+      None
+Comment: GPIO_PORTM_PP_R unused
+GPIO_PORTM_PUR_R 40063510
+
+Symbol: GPIO_PORTM_PUR_R
+   Definitions
+      At line 78 in file matrix_keyboard.s
+   Uses
+      None
+Comment: GPIO_PORTM_PUR_R unused
+GPIO_PORTM_RIS_R 40063414
+
+Symbol: GPIO_PORTM_RIS_R
+   Definitions
+      At line 70 in file matrix_keyboard.s
+   Uses
+      None
+Comment: GPIO_PORTM_RIS_R unused
+GPIO_PORTM_SI_R 40063538
+
+Symbol: GPIO_PORTM_SI_R
+   Definitions
+      At line 88 in file matrix_keyboard.s
+   Uses
+      None
+Comment: GPIO_PORTM_SI_R unused
+
+
+
+ARM Macro Assembler    Page 10 Alphabetic symbol ordering
+Absolute symbols
+
+GPIO_PORTM_SLR_R 40063518
+
+Symbol: GPIO_PORTM_SLR_R
+   Definitions
+      At line 80 in file matrix_keyboard.s
+   Uses
+      None
+Comment: GPIO_PORTM_SLR_R unused
+GPIO_PORTM_WAKELVL_R 40063544
+
+Symbol: GPIO_PORTM_WAKELVL_R
+   Definitions
+      At line 91 in file matrix_keyboard.s
+   Uses
+      None
+Comment: GPIO_PORTM_WAKELVL_R unused
+GPIO_PORTM_WAKEPEN_R 40063540
+
+Symbol: GPIO_PORTM_WAKEPEN_R
+   Definitions
+      At line 90 in file matrix_keyboard.s
+   Uses
+      None
+Comment: GPIO_PORTM_WAKEPEN_R unused
+GPIO_PORTM_WAKESTAT_R 40063548
+
+Symbol: GPIO_PORTM_WAKESTAT_R
+   Definitions
+      At line 92 in file matrix_keyboard.s
+   Uses
+      None
+Comment: GPIO_PORTM_WAKESTAT_R unused
+LINE_1 0000000E
+
+Symbol: LINE_1
+   Definitions
+      At line 18 in file matrix_keyboard.s
+   Uses
+      None
+Comment: LINE_1 unused
+LINE_2 0000000D
+
+Symbol: LINE_2
+   Definitions
+      At line 19 in file matrix_keyboard.s
+   Uses
+      None
+Comment: LINE_2 unused
+LINE_3 0000000B
+
+Symbol: LINE_3
+   Definitions
+      At line 20 in file matrix_keyboard.s
+   Uses
+      None
+Comment: LINE_3 unused
+LINE_4 00000007
+
+Symbol: LINE_4
+
+
+
+ARM Macro Assembler    Page 11 Alphabetic symbol ordering
+Absolute symbols
+
+   Definitions
+      At line 21 in file matrix_keyboard.s
+   Uses
+      None
+Comment: LINE_4 unused
+SYSCTL_PRGPIO_R 400FEA08
+
+Symbol: SYSCTL_PRGPIO_R
+   Definitions
+      At line 12 in file matrix_keyboard.s
+   Uses
+      At line 125 in file matrix_keyboard.s
+Comment: SYSCTL_PRGPIO_R used once
+SYSCTL_RCGCGPIO_R 400FE608
+
+Symbol: SYSCTL_RCGCGPIO_R
+   Definitions
+      At line 11 in file matrix_keyboard.s
+   Uses
+      At line 118 in file matrix_keyboard.s
+Comment: SYSCTL_RCGCGPIO_R used once
+76 symbols
+
+
+
+ARM Macro Assembler    Page 1 Alphabetic symbol ordering
+External symbols
+
+SysTick_Wait1ms 00000000
+
+Symbol: SysTick_Wait1ms
+   Definitions
+      At line 107 in file matrix_keyboard.s
+   Uses
+      At line 240 in file matrix_keyboard.s
+Comment: SysTick_Wait1ms used once
+SysTick_Wait1us 00000000
+
+Symbol: SysTick_Wait1us
+   Definitions
+      At line 106 in file matrix_keyboard.s
+   Uses
+      None
+Comment: SysTick_Wait1us unused
+2 symbols
+425 symbols in table
