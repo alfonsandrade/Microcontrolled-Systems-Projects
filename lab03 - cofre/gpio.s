@@ -165,48 +165,41 @@ EsperaGPIO  LDR     R1, [R0]						;Lê da memória o conteúdo do endereço do regis
 
 			;desabilita as interrupcoes
 			LDR 	R0, =GPIO_PORTJ_AHB_IM_R
-			LDR 	R1, [R0]	;pega info
-			BIC		R1, #2_11	;reseta bits
-			ORR		R1, R1, #2_00	;seta bits
-			STR		R1, [R0]	;registra
-			
+			LDR 	R1, [R0]		;pega info
+			BIC		R1, #2_1		;reseta bits
+			ORR		R1, R1, #2_0 	;seta bits
+			STR		R1, [R0]		;registra
 			; configura como borda
 			LDR		R0, =GPIO_PORTJ_AHB_IS_R
 			LDR 	R1, [R0]	;pega info
-			BIC		R1, #2_11	;reseta bits
-			ORR		R1, R1, #2_00	;seta bits
+			BIC		R1, #2_1	;reseta bits
+			ORR		R1, R1, #2_0	;seta bits
 			STR		R1, [R0]
-			
 			;configura borda unica
 			LDR		R0, =GPIO_PORTJ_AHB_IBE_R
 			LDR 	R1, [R0]	;pega info
-			BIC		R1, #2_11	;reseta bits
-			ORR		R1, R1, #2_00	;seta bits
+			BIC		R1, #2_1	;reseta bits
+			ORR		R1, R1, #2_0	;seta bits
 			STR		R1, [R0]
-			
 			;Configurar borda de descida para J0 e borda de subida para J1 no registrador GPIOIEV
 			LDR		R0, =GPIO_PORTJ_AHB_IEV_R
 			LDR 	R1, [R0]	;pega info
-			BIC		R1, #2_11	;reseta bits
-			ORR		R1, R1, #2_10	;seta bits
+			BIC		R1, #2_1	;reseta bits
+			ORR		R1, R1, #2_0	;seta bits
 			STR		R1, [R0]
-			
 			;Garantir que a interrupção será atendida limpando o GPIORIS e GPIOMIS, realizando o ACK no registrador
 			; GPIOICR para ambos os pinos. Setar os bits;
 			LDR		R0, =GPIO_PORTJ_AHB_ICR_R
 			LDR 	R1, [R0]	;pega info
-			BIC		R1, #2_11	;reseta bits
-			ORR		R1, R1, #2_11	;seta bits
+			BIC		R1, #2_1	;reseta bits
+			ORR		R1, R1, #2_1	;seta bits
 			STR		R1, [R0]
-			
 			; reabilita as interrupções
 			LDR 	R0, =GPIO_PORTJ_AHB_IM_R
 			LDR 	R1, [R0]	;pega info
 			BIC		R1, #2_11	;reseta bits
 			ORR		R1, R1, #2_11	;seta bits
 			STR		R1, [R0]	;registra
-			
-			
 			; ativar a fonte de interrupção no NVIC
 			LDR		R0, =NVIC_EN1_R
 			LDR 	R1, [R0]
@@ -225,8 +218,9 @@ EsperaGPIO  LDR     R1, [R0]						;Lê da memória o conteúdo do endereço do regis
 			LSL		R3, #29	;4a posicao do reg PRI12
 			ORR		R1, R1, R3
 			STR 	R1, [R0]
-
+			
 			BX      LR ;retorno
+
 
 ; -------------------------------------------------------------------------------
 ; Função PortF_Output
@@ -257,26 +251,36 @@ PortJ_Input
 GPIOPortJ_Handler
 	LDR R1, =GPIO_PORTJ_AHB_RIS_R
 	LDR R2, [R1]
-	CMP R2, #2_01
+	CMP R2, #2_1
 	BEQ bt_J0_pressed
-	CMP R2, #2_10
-	BEQ bt_J1_release
-	B bt_J1_release
 bt_J0_pressed
 	LDR R1, =GPIO_PORTJ_AHB_ICR_R
 	STR R2, [R1]
 	MOV R0, #1
 	B set_led_interrupt
-bt_J1_release
-	LDR R1, =GPIO_PORTJ_AHB_ICR_R
-	STR R2, [R1]
-	MOV R0, #0
 set_led_interrupt
 	PUSH {LR}
 	BL PortF_Output
 	POP {LR}
 	
 	BX LR
+; -------------------------------------------------------------------------------
+DisableInterrupt
+	LDR 	R0, =GPIO_PORTJ_AHB_IM_R
+	LDR 	R1, [R0]		;pega info
+	BIC		R1, #2_1		;reseta bits
+	ORR		R1, R1, #2_0 	;seta bits
+	STR		R1, [R0]		;registra
+
+
+EnableInterrupt
+	LDR 	R0, =GPIO_PORTJ_AHB_IM_R
+	LDR 	R1, [R0]	;pega info
+	BIC		R1, #2_11	;reseta bits
+	ORR		R1, R1, #2_11	;seta bits
+	STR		R1, [R0]	;registra
+
+	
 
 ; -------------------------------------------------------------------------------
 ; fim do arquivo

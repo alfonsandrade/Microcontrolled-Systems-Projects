@@ -706,12 +706,11 @@ ARM Macro Assembler    Page 11
               40062510 
               400633FC 
               400623FC 
-Command Line: --debug --xref --diag_suppress=9931 --cpu=Cortex-M4.fp.sp --apcs=
-interwork --depend=.\objects\matrix_keyboard.d -o.\objects\matrix_keyboard.o -I
-C:\Users\roger\AppData\Local\Arm\Packs\Keil\TM4C_DFP\1.1.0\Device\Include\TM4C1
-29 --predefine="__EVAL SETA 1" --predefine="__UVISION_VERSION SETA 536" --prede
-fine="TM4C1294NCPDT SETA 1" --list=.\listings\matrix_keyboard.lst matrix_keyboa
-rd.s
+Command Line: --debug --xref --diag_suppress=9931,A1950W --cpu=Cortex-M4.fp.sp 
+--depend=.\objects\matrix_keyboard.d -o.\objects\matrix_keyboard.o -IC:\Users\a
+lfon\AppData\Local\Arm\Packs\Keil\TM4C_DFP\1.1.0\Device\Include\TM4C129 --prede
+fine="__EVAL SETA 1" --predefine="__UVISION_VERSION SETA 538" --predefine="TM4C
+1294NCPDT SETA 1" --list=.\listings\matrix_keyboard.lst matrix_keyboard.s
 
 
 

@@ -56,35 +56,54 @@
 		IMPORT MKBOARD_getValuePressed
 		IMPORT MKBOARD_valueToASCII
 			
+		IMPORT LEDS_AND_DISPLAYS_init
+		IMPORT select_leds
+		IMPORT select_dig_DS
+		IMPORT turn_leds_ON
+		IMPORT turn_DS1_ON
+		IMPORT turn_DS2_ON
+		
 		IMPORT SysTick_Wait1us
+; ========================
+; Constantes
+
+; ========================
+; Ponteiros
+ARRAY_PW_OPEN		EQU	0x20000000
 
 ; -------------------------------------------------------------------------------
-; Função main()
+; Função main()	
 Start  			
 	BL PLL_Init                  ;Chama a subrotina para alterar o clock do microcontrolador para 80MHz
 	BL SysTick_Init
 	BL GPIO_Init                 ;Chama a subrotina que inicializa os GPIO
 	BL LCD_init
 	BL MKBOARD_init
+	BL LEDS_AND_DISPLAYS_init	
 	
-	LDR R0, =STR1
-	BL LCD_print_string
-	MOV R0, #1000
-	BL SysTick_Wait1ms
-	BL LCD_reset
+	MOV R0, #0xFF
+	BL select_leds
+	BL turn_leds_ON
+	BL turn_DS1_ON
+	BL turn_DS2_ON
 	
 MainLoop
-	
+	LDR R0, =MSG_OPEN
+	BL LCD_print_string
 	; pega um valor do teclado
+	MOV R0, #0xC0
+	BL LCD_command
+	LDR R0, =MSG_PWscreen
+	BL LCD_print_string
+wait_click
+
 	BL MKBOARD_getValuePressed
-	
 	CMP R0, #0xFF
-	BEQ MainLoop
-	CMP R0, #0xF
-	BEQ Reset      
+	BEQ wait_click   
 	BL MKBOARD_valueToASCII
 	BL LCD_write_data
-	B MainLoop
+	B wait_click
+
 
 Reset
 	BL LCD_reset
@@ -101,6 +120,7 @@ MSG_OPENING	DCB	"Cofre Abrindo",0
 MSG_CLOSING	DCB "Cofre Fechando",0
 MSG_CLOSED	DCB	"Cofre Fechado!",0
 MSG_LOCKED	DCB	"Cofre Travado!",0
+MSG_PWscreen DCB " PW:",0
 
     ALIGN                        ;Garante que o fim da seção está alinhada 
     END                          ;Fim do arquivo
