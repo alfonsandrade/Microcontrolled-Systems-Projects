@@ -92,132 +92,178 @@ ARM Macro Assembler    Page 2
    64 00000000                 IMPORT           turn_DS2_ON
    65 00000000         
    66 00000000                 IMPORT           SysTick_Wait1us
-   67 00000000         ; ========================
-   68 00000000         ; Constantes
-   69 00000000         
-   70 00000000         ; ========================
-   71 00000000         ; Ponteiros
-   72 00000000 20000000 
-                       ARRAY_PW_OPEN
+   67 00000000                 IMPORT           SysTick_Wait1ms
+   68 00000000         ; ========================
+   69 00000000         ; Constantes
+   70 00000000 20000004 
+                       NUM_ATTEMPTS
+                               EQU              0x20000004
+   71 00000000         ; ========================
+   72 00000000         ; Ponteiros
+   73 00000000 20000000 
+                       ARRAY_PW
                                EQU              0x20000000
-   73 00000000         
-   74 00000000         ; ------------------------------------------------------
+   74 00000000         
+   75 00000000         ; ------------------------------------------------------
                        -------------------------
-   75 00000000         ; Função main() 
-   76 00000000         Start
-   77 00000000 F7FF FFFE       BL               PLL_Init    ;Chama a subrotina 
+   76 00000000         ; Função main()    
+   77 00000000         Start
+   78 00000000 F7FF FFFE       BL               PLL_Init    ;Chama a subrotina 
                                                             para alterar o cloc
                                                             k do microcontrolad
                                                             or para 80MHz
-   78 00000004 F7FF FFFE       BL               SysTick_Init
-   79 00000008 F7FF FFFE       BL               GPIO_Init   ;Chama a subrotina 
+   79 00000004 F7FF FFFE       BL               SysTick_Init
+   80 00000008 F7FF FFFE       BL               GPIO_Init   ;Chama a subrotina 
                                                             que inicializa os G
                                                             PIO
-   80 0000000C F7FF FFFE       BL               LCD_init
-   81 00000010 F7FF FFFE       BL               MKBOARD_init
-   82 00000014 F7FF FFFE       BL               LEDS_AND_DISPLAYS_init
-   83 00000018         
-   84 00000018 F04F 00FF       MOV              R0, #0xFF
-   85 0000001C F7FF FFFE       BL               select_leds
-   86 00000020 F7FF FFFE       BL               turn_leds_ON
-   87 00000024 F7FF FFFE       BL               turn_DS1_ON
-   88 00000028 F7FF FFFE       BL               turn_DS2_ON
-   89 0000002C         
-   90 0000002C         MainLoop
-   91 0000002C 4827            LDR              R0, =MSG_OPEN
-   92 0000002E F7FF FFFE       BL               LCD_print_string
-   93 00000032         ; pega um valor do teclado
-   94 00000032 F04F 00C0       MOV              R0, #0xC0
+   81 0000000C F7FF FFFE       BL               LCD_init
+   82 00000010 F7FF FFFE       BL               MKBOARD_init
+   83 00000014 F7FF FFFE       BL               LEDS_AND_DISPLAYS_init
+   84 00000018         ; Initialize the password length counter
+   85 00000018 F04F 0400       MOV              R4, #0
+   86 0000001C         MainLoop
+   87 0000001C F7FF FFFE       BL               LCD_reset
+   88 00000020 483A            LDR              R0, =MSG_OPEN
+   89 00000022 F7FF FFFE       BL               LCD_print_string
+   90 00000026         ; pega um valor do teclado
+   91 00000026 F04F 00C0       MOV              R0, #0xC0
+   92 0000002A F7FF FFFE       BL               LCD_command
 
 
 
 ARM Macro Assembler    Page 3 
 
 
-   95 00000036 F7FF FFFE       BL               LCD_command
-   96 0000003A 4825            LDR              R0, =MSG_PWscreen
-   97 0000003C F7FF FFFE       BL               LCD_print_string
-   98 00000040         wait_click
-   99 00000040         
-  100 00000040 F7FF FFFE       BL               MKBOARD_getValuePressed
-  101 00000044 28FF            CMP              R0, #0xFF
-  102 00000046 D0FB            BEQ              wait_click
-  103 00000048 F7FF FFFE       BL               MKBOARD_valueToASCII
-  104 0000004C F7FF FFFE       BL               LCD_write_data
-  105 00000050 E7F6            B                wait_click
-  106 00000052         
-  107 00000052         
-  108 00000052         Reset
-  109 00000052 F7FF FFFE       BL               LCD_reset
-  110 00000056 E7E9            B                MainLoop    ;Volta para o laço 
-                                                            principal 
-  111 00000058         
-  112 00000058         ; ------------------------------------------------------
-                       -------------------------
-  113 00000058         
-  114 00000058 44 45 55 
-              20 42 4F 
-              41 20 31 
-              00       STR1    DCB              "DEU BOA 1",0
-  115 00000062 44 45 55 
-              20 42 4F 
-              41 20 32 
-              00       STR2    DCB              "DEU BOA 2", 0
-  116 0000006C         ;STR2 DCB 'n','o','m','e',0
-  117 0000006C 53 65 6D 
-              20 56 61 
-              6C 6F 72 
-              21 00    MSG_NENHUM_VALOR
-                               DCB              "Sem Valor!",0
-  118 00000077 43 6F 66 
-              72 65 20 
-              41 62 65 
-              72 74 6F 
-              20 3A 29 
-              20 21 00 MSG_OPEN
-                               DCB              "Cofre Aberto :) !",0
-  119 00000089 43 6F 66 
-              72 65 20 
-              41 62 72 
-              69 6E 64 
-              6F 00    MSG_OPENING
-                               DCB              "Cofre Abrindo",0
-  120 00000097 43 6F 66 
-              72 65 20 
-              46 65 63 
-              68 61 6E 
-              64 6F 00 MSG_CLOSING
-                               DCB              "Cofre Fechando",0
-  121 000000A6 43 6F 66 
-              72 65 20 
-              46 65 63 
-              68 61 64 
-              6F 21 00 MSG_CLOSED
+   93 0000002E 4838            LDR              R0, =MSG_PWscreen
+   94 00000030 F7FF FFFE       BL               LCD_print_string
+   95 00000034         
+   96 00000034         wait_click
+   97 00000034 F7FF FFFE       BL               MKBOARD_getValuePressed
+   98 00000038 28FF            CMP              R0, #0xFF
+   99 0000003A D0FB            BEQ              wait_click
+  100 0000003C         ; Check if the pressed key is 'E'
+  101 0000003C 280E            CMP              R0, #0x0E
+  102 0000003E D127            BNE              not_e_key
+  103 00000040         ; Check if the password has 4 digits
+  104 00000040 2C04            CMP              R4, #4
+  105 00000042 D1F7            BNE              wait_click
+  106 00000044         ; If 'E' is pressed and the password has 4 digits, store
+                        the password and display MSG_CLOSING
+  107 00000044         Closing
+  108 00000044 F7FF FFFE       BL               LCD_reset
+  109 00000048 4832            LDR              R0, =MSG_CLOSING
+  110 0000004A F7FF FFFE       BL               LCD_print_string
+  111 0000004E         ; Display the stored password on the second line
+  112 0000004E         ; Print the MSG_PWscreen before displaying the stored pa
+                       ssword
+  113 0000004E F04F 00C0       MOV              R0, #0xC0
+  114 00000052 F7FF FFFE       BL               LCD_command
+  115 00000056 482E            LDR              R0, =MSG_PWscreen
+  116 00000058 F7FF FFFE       BL               LCD_print_string
+  117 0000005C F04F 5100       LDR              R1, =ARRAY_PW
+  118 00000060 F04F 0200       MOV              R2, #0
+  119 00000064         display_password_loop
+  120 00000064 7808            LDRB             R0, [R1]
+  121 00000066 F7FF FFFE       BL               MKBOARD_valueToASCII
+  122 0000006A F7FF FFFE       BL               LCD_write_data
+  123 0000006E F101 0101       ADD              R1, R1, #1
+  124 00000072 F102 0201       ADD              R2, R2, #1
+  125 00000076 2A04            CMP              R2, #4
+  126 00000078 DBF4            BLT              display_password_loop
+  127 0000007A         ; Add appropriate delay subroutine to pause the display 
+                       for 5 seconds
+  128 0000007A F241 3088       LDR              R0, =5000
+  129 0000007E F7FF FFFE       BL               SysTick_Wait1ms
+  130 00000082 F000 F800       BL               Closed
+  131 00000086         ; Display MSG_CLOSED
+  132 00000086         Closed
+  133 00000086 F7FF FFFE       BL               LCD_reset
+  134 0000008A 4823            LDR              R0, =MSG_CLOSED
+  135 0000008C F7FF FFFE       BL               LCD_print_string
+  136 00000090         
+  137 00000090         not_e_key
+  138 00000090         ; Check if the password already has 4 digits
+  139 00000090 2C04            CMP              R4, #4
+  140 00000092 D0CF            BEQ              wait_click
+  141 00000094         ; Store the pressed key value in ARRAY_PW
+  142 00000094 F04F 5100       LDR              R1, =ARRAY_PW
+  143 00000098 4421            ADD              R1, R1, R4
+  144 0000009A 6008            STR              R0, [R1]
+  145 0000009C         ; Increment the password length counter
+  146 0000009C F104 0401       ADD              R4, R4, #1
+  147 000000A0         ; Check if the password length counter is now 4
+  148 000000A0 2C05            CMP              R4, #5
 
 
 
 ARM Macro Assembler    Page 4 
 
 
-                               DCB              "Cofre Fechado!",0
-  122 000000B5 43 6F 66 
+  149 000000A2 D104            BNE              not_final_digit
+  150 000000A4         ; If the password length counter is now 4, null-terminat
+                       e the ARRAY_PW string
+  151 000000A4 F101 0101       ADD              R1, R1, #1
+  152 000000A8 F04F 0000       MOV              R0, #0
+  153 000000AC 6008            STR              R0, [R1]
+  154 000000AE         not_final_digit
+  155 000000AE         ; Convert the value to ASCII and display it
+  156 000000AE F7FF FFFE       BL               MKBOARD_valueToASCII
+  157 000000B2 F7FF FFFE       BL               LCD_write_data
+  158 000000B6 E7BD            B                wait_click
+  159 000000B8         
+  160 000000B8 43 6F 66 
+              72 65 20 
+              41 62 65 
+              72 74 6F 
+              20 3A 29 
+              20 21 00 MSG_OPEN
+                               DCB              "Cofre Aberto :) !",0
+  161 000000CA 43 6F 66 
+              72 65 20 
+              41 62 72 
+              69 6E 64 
+              6F 00    MSG_OPENING
+                               DCB              "Cofre Abrindo",0
+  162 000000D8 43 6F 66 
+              72 65 20 
+              46 65 63 
+              68 61 6E 
+              64 6F 00 MSG_CLOSING
+                               DCB              "Cofre Fechando",0
+  163 000000E7 43 6F 66 
+              72 65 20 
+              46 65 63 
+              68 61 64 
+              6F 21 20 
+              20 00    MSG_CLOSED
+                               DCB              "Cofre Fechado!  ",0
+  164 000000F8 43 6F 66 
               72 65 20 
               54 72 61 
               76 61 64 
               6F 21 00 MSG_LOCKED
                                DCB              "Cofre Travado!",0
-  123 000000C4 20 50 57 
+  165 00000107 20 50 57 
               3A 00    MSG_PWscreen
                                DCB              " PW:",0
-  124 000000C9         
-  125 000000C9 00 00 00        ALIGN                        ;Garante que o fim 
+  166 0000010C         
+  167 0000010C                 ALIGN                        ;Garante que o fim 
                                                             da seção está alinh
                                                             ada 
-  126 000000CC                 END                          ;Fim do arquivo
+  168 0000010C                 END                          ;Fim do arquivo
+              00000000 
+              00000000 
+              00000000 
               00000000 
               00000000 
 Command Line: --debug --xref --diag_suppress=9931,A1950W --cpu=Cortex-M4.fp.sp 
 --depend=.\objects\main.d -o.\objects\main.o -IC:\Users\alfon\AppData\Local\Arm
+
+
+
+ARM Macro Assembler    Page 5 
+
+
 \Packs\Keil\TM4C_DFP\1.1.0\Device\Include\TM4C129 --predefine="__EVAL SETA 1" -
 -predefine="__UVISION_VERSION SETA 538" --predefine="TM4C1294NCPDT SETA 1" --li
 st=.\listings\main.lst main.s
@@ -250,57 +296,57 @@ Symbol: .text
    Uses
       None
 Comment: .text unused
-MSG_CLOSED 000000A6
+Closed 00000086
+
+Symbol: Closed
+   Definitions
+      At line 132 in file main.s
+   Uses
+      At line 130 in file main.s
+Comment: Closed used once
+Closing 00000044
+
+Symbol: Closing
+   Definitions
+      At line 107 in file main.s
+   Uses
+      None
+Comment: Closing unused
+MSG_CLOSED 000000E7
 
 Symbol: MSG_CLOSED
    Definitions
-      At line 121 in file main.s
+      At line 163 in file main.s
    Uses
-      None
-Comment: MSG_CLOSED unused
-MSG_CLOSING 00000097
+      At line 134 in file main.s
+Comment: MSG_CLOSED used once
+MSG_CLOSING 000000D8
 
 Symbol: MSG_CLOSING
    Definitions
-      At line 120 in file main.s
+      At line 162 in file main.s
    Uses
-      None
-Comment: MSG_CLOSING unused
-MSG_LOCKED 000000B5
+      At line 109 in file main.s
+Comment: MSG_CLOSING used once
+MSG_LOCKED 000000F8
 
 Symbol: MSG_LOCKED
    Definitions
-      At line 122 in file main.s
+      At line 164 in file main.s
    Uses
       None
 Comment: MSG_LOCKED unused
-MSG_NENHUM_VALOR 0000006C
-
-Symbol: MSG_NENHUM_VALOR
-   Definitions
-      At line 117 in file main.s
-   Uses
-      None
-Comment: MSG_NENHUM_VALOR unused
-MSG_OPEN 00000077
+MSG_OPEN 000000B8
 
 Symbol: MSG_OPEN
    Definitions
-      At line 118 in file main.s
+      At line 160 in file main.s
    Uses
-      At line 91 in file main.s
+      At line 88 in file main.s
 Comment: MSG_OPEN used once
-MSG_OPENING 00000089
+MSG_OPENING 000000CA
 
 Symbol: MSG_OPENING
-   Definitions
-      At line 119 in file main.s
-   Uses
-      None
-Comment: MSG_OPENING unused
-MSG_PWscreen 000000C4
-
-Symbol: MSG_PWscreen
 
 
 
@@ -308,75 +354,101 @@ ARM Macro Assembler    Page 2 Alphabetic symbol ordering
 Relocatable symbols
 
    Definitions
-      At line 123 in file main.s
+      At line 161 in file main.s
    Uses
-      At line 96 in file main.s
-Comment: MSG_PWscreen used once
-MainLoop 0000002C
+      None
+Comment: MSG_OPENING unused
+MSG_PWscreen 00000107
+
+Symbol: MSG_PWscreen
+   Definitions
+      At line 165 in file main.s
+   Uses
+      At line 93 in file main.s
+      At line 115 in file main.s
+
+MainLoop 0000001C
 
 Symbol: MainLoop
    Definitions
-      At line 90 in file main.s
-   Uses
-      At line 110 in file main.s
-Comment: MainLoop used once
-Reset 00000052
-
-Symbol: Reset
-   Definitions
-      At line 108 in file main.s
+      At line 86 in file main.s
    Uses
       None
-Comment: Reset unused
-STR1 00000058
-
-Symbol: STR1
-   Definitions
-      At line 114 in file main.s
-   Uses
-      None
-Comment: STR1 unused
-STR2 00000062
-
-Symbol: STR2
-   Definitions
-      At line 115 in file main.s
-   Uses
-      None
-Comment: STR2 unused
+Comment: MainLoop unused
 Start 00000000
 
 Symbol: Start
    Definitions
-      At line 76 in file main.s
+      At line 77 in file main.s
    Uses
       At line 34 in file main.s
 Comment: Start used once
-wait_click 00000040
+display_password_loop 00000064
+
+Symbol: display_password_loop
+   Definitions
+      At line 119 in file main.s
+   Uses
+      At line 126 in file main.s
+Comment: display_password_loop used once
+not_e_key 00000090
+
+Symbol: not_e_key
+   Definitions
+      At line 137 in file main.s
+   Uses
+      At line 102 in file main.s
+Comment: not_e_key used once
+not_final_digit 000000AE
+
+Symbol: not_final_digit
+   Definitions
+      At line 154 in file main.s
+   Uses
+      At line 149 in file main.s
+Comment: not_final_digit used once
+wait_click 00000034
 
 Symbol: wait_click
    Definitions
-      At line 98 in file main.s
-   Uses
-      At line 102 in file main.s
-      At line 105 in file main.s
+      At line 96 in file main.s
 
-14 symbols
+
+
+ARM Macro Assembler    Page 3 Alphabetic symbol ordering
+Relocatable symbols
+
+   Uses
+      At line 99 in file main.s
+      At line 105 in file main.s
+      At line 140 in file main.s
+      At line 158 in file main.s
+
+15 symbols
 
 
 
 ARM Macro Assembler    Page 1 Alphabetic symbol ordering
 Absolute symbols
 
-ARRAY_PW_OPEN 20000000
+ARRAY_PW 20000000
 
-Symbol: ARRAY_PW_OPEN
+Symbol: ARRAY_PW
    Definitions
-      At line 72 in file main.s
+      At line 73 in file main.s
+   Uses
+      At line 117 in file main.s
+      At line 142 in file main.s
+
+NUM_ATTEMPTS 20000004
+
+Symbol: NUM_ATTEMPTS
+   Definitions
+      At line 70 in file main.s
    Uses
       None
-Comment: ARRAY_PW_OPEN unused
-1 symbol
+Comment: NUM_ATTEMPTS unused
+2 symbols
 
 
 
@@ -397,7 +469,7 @@ Symbol: GPIO_Init
    Definitions
       At line 44 in file main.s
    Uses
-      At line 79 in file main.s
+      At line 80 in file main.s
 Comment: GPIO_Init used once
 LCD_command 00000000
 
@@ -405,15 +477,16 @@ Symbol: LCD_command
    Definitions
       At line 51 in file main.s
    Uses
-      At line 95 in file main.s
-Comment: LCD_command used once
+      At line 92 in file main.s
+      At line 114 in file main.s
+
 LCD_init 00000000
 
 Symbol: LCD_init
    Definitions
       At line 49 in file main.s
    Uses
-      At line 80 in file main.s
+      At line 81 in file main.s
 Comment: LCD_init used once
 LCD_print_string 00000000
 
@@ -421,8 +494,11 @@ Symbol: LCD_print_string
    Definitions
       At line 53 in file main.s
    Uses
-      At line 92 in file main.s
-      At line 97 in file main.s
+      At line 89 in file main.s
+      At line 94 in file main.s
+      At line 110 in file main.s
+      At line 116 in file main.s
+      At line 135 in file main.s
 
 LCD_reset 00000000
 
@@ -430,29 +506,32 @@ Symbol: LCD_reset
    Definitions
       At line 50 in file main.s
    Uses
-      At line 109 in file main.s
-Comment: LCD_reset used once
+      At line 87 in file main.s
+      At line 108 in file main.s
+      At line 133 in file main.s
+
 LCD_write_data 00000000
 
 Symbol: LCD_write_data
    Definitions
-      At line 52 in file main.s
-   Uses
-      At line 104 in file main.s
-Comment: LCD_write_data used once
-LEDS_AND_DISPLAYS_init 00000000
-
 
 
 
 ARM Macro Assembler    Page 2 Alphabetic symbol ordering
 External symbols
 
+      At line 52 in file main.s
+   Uses
+      At line 122 in file main.s
+      At line 157 in file main.s
+
+LEDS_AND_DISPLAYS_init 00000000
+
 Symbol: LEDS_AND_DISPLAYS_init
    Definitions
       At line 59 in file main.s
    Uses
-      At line 82 in file main.s
+      At line 83 in file main.s
 Comment: LEDS_AND_DISPLAYS_init used once
 MKBOARD_getValuePressed 00000000
 
@@ -460,7 +539,7 @@ Symbol: MKBOARD_getValuePressed
    Definitions
       At line 56 in file main.s
    Uses
-      At line 100 in file main.s
+      At line 97 in file main.s
 Comment: MKBOARD_getValuePressed used once
 MKBOARD_init 00000000
 
@@ -468,7 +547,7 @@ Symbol: MKBOARD_init
    Definitions
       At line 55 in file main.s
    Uses
-      At line 81 in file main.s
+      At line 82 in file main.s
 Comment: MKBOARD_init used once
 MKBOARD_valueToASCII 00000000
 
@@ -476,15 +555,16 @@ Symbol: MKBOARD_valueToASCII
    Definitions
       At line 57 in file main.s
    Uses
-      At line 103 in file main.s
-Comment: MKBOARD_valueToASCII used once
+      At line 121 in file main.s
+      At line 156 in file main.s
+
 PLL_Init 00000000
 
 Symbol: PLL_Init
    Definitions
       At line 40 in file main.s
    Uses
-      At line 77 in file main.s
+      At line 78 in file main.s
 Comment: PLL_Init used once
 PortF_Output 00000000
 
@@ -499,6 +579,12 @@ PortJ_Input 00000000
 Symbol: PortJ_Input
    Definitions
       At line 46 in file main.s
+
+
+
+ARM Macro Assembler    Page 3 Alphabetic symbol ordering
+External symbols
+
    Uses
       None
 Comment: PortJ_Input unused
@@ -507,23 +593,18 @@ SysTick_Init 00000000
 Symbol: SysTick_Init
    Definitions
       At line 41 in file main.s
-
-
-
-ARM Macro Assembler    Page 3 Alphabetic symbol ordering
-External symbols
-
    Uses
-      At line 78 in file main.s
+      At line 79 in file main.s
 Comment: SysTick_Init used once
 SysTick_Wait1ms 00000000
 
 Symbol: SysTick_Wait1ms
    Definitions
       At line 42 in file main.s
+      At line 67 in file main.s
    Uses
-      None
-Comment: SysTick_Wait1ms unused
+      At line 129 in file main.s
+Warning: SysTick_Wait1ms multiply definedComment: SysTick_Wait1ms used once
 SysTick_Wait1us 00000000
 
 Symbol: SysTick_Wait1us
@@ -546,37 +627,37 @@ Symbol: select_leds
    Definitions
       At line 60 in file main.s
    Uses
-      At line 85 in file main.s
-Comment: select_leds used once
+      None
+Comment: select_leds unused
 turn_DS1_ON 00000000
 
 Symbol: turn_DS1_ON
    Definitions
       At line 63 in file main.s
    Uses
-      At line 87 in file main.s
-Comment: turn_DS1_ON used once
+      None
+Comment: turn_DS1_ON unused
 turn_DS2_ON 00000000
 
 Symbol: turn_DS2_ON
    Definitions
       At line 64 in file main.s
    Uses
-      At line 88 in file main.s
-Comment: turn_DS2_ON used once
-turn_leds_ON 00000000
-
-Symbol: turn_leds_ON
-   Definitions
-      At line 62 in file main.s
-   Uses
-      At line 86 in file main.s
-Comment: turn_leds_ON used once
+      None
 
 
 
 ARM Macro Assembler    Page 4 Alphabetic symbol ordering
 External symbols
 
+Comment: turn_DS2_ON unused
+turn_leds_ON 00000000
+
+Symbol: turn_leds_ON
+   Definitions
+      At line 62 in file main.s
+   Uses
+      None
+Comment: turn_leds_ON unused
 22 symbols
-374 symbols in table
+376 symbols in table
