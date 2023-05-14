@@ -94,7 +94,7 @@ MainLoop
 	BL LCD_reset
 	MOV R5, #0
 	MOV R4, #0
-;	BL DisableInterrupt
+	;BL DisableInterrupt
     LDR R0, =MSG_OPEN
     BL LCD_print_string
     MOV R0, #0xC0
@@ -250,11 +250,14 @@ Blocked
 	BL LCD_reset
     LDR R0, =MSG_BLOCKED
     BL LCD_print_string
-	BL EnableInterrupt
+;	BL EnableInterrupt
 	MOV R4, #0
 	LDR R1, =INPUT_PW ; Array pointer
     MOV R2, #5 ; Size of the array to clear (4 digits + null-terminator)
 	BL clear_array
+	LDR R0, =3000
+    BL SysTick_Wait1ms
+	B Blocked
 
 enter_pw_master_interrupt
 	BL LCD_reset

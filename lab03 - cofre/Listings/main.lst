@@ -140,12 +140,12 @@ ARM Macro Assembler    Page 3
    94 00000018 F7FF FFFE       BL               LCD_reset
    95 0000001C F04F 0500       MOV              R5, #0
    96 00000020 F04F 0400       MOV              R4, #0
-   97 00000024         ; BL DisableInterrupt
-   98 00000024 48A2            LDR              R0, =MSG_OPEN
+   97 00000024         ;BL DisableInterrupt
+   98 00000024 48A4            LDR              R0, =MSG_OPEN
    99 00000026 F7FF FFFE       BL               LCD_print_string
   100 0000002A F04F 00C0       MOV              R0, #0xC0
   101 0000002E F7FF FFFE       BL               LCD_command
-  102 00000032 48A0            LDR              R0, =MSG_PWscreen
+  102 00000032 48A2            LDR              R0, =MSG_PWscreen
   103 00000034 F7FF FFFE       BL               LCD_print_string
   104 00000038         
   105 00000038         wait_click_open
@@ -161,26 +161,26 @@ ARM Macro Assembler    Page 3
   115 00000048         
   116 00000048         Closing
   117 00000048 F7FF FFFE       BL               LCD_reset
-  118 0000004C 499A            LDR              R1, =INPUT_PW ; Source array po
+  118 0000004C 499C            LDR              R1, =INPUT_PW ; Source array po
                                                             inter
   119 0000004E F04F 5200       LDR              R2, =ARRAY_PW ; Destination arr
                                                             ay pointer
   120 00000052 F04F 0305       MOV              R3, #5      ; Size of the array
                                                              to copy (4 digits 
                                                             + null-terminator)
-  121 00000056 F000 F8C8       BL               copy_array  ; Call the copy_arr
+  121 00000056 F000 F8CB       BL               copy_array  ; Call the copy_arr
                                                             ay function
-  122 0000005A 4997            LDR              R1, =INPUT_PW ; Array pointer
+  122 0000005A 4999            LDR              R1, =INPUT_PW ; Array pointer
   123 0000005C F04F 0205       MOV              R2, #5      ; Size of the array
                                                              to clear (4 digits
                                                              + null-terminator)
                                                             
-  124 00000060 F000 F8CF       BL               clear_array
-  125 00000064 4895            LDR              R0, =MSG_CLOSING
+  124 00000060 F000 F8D2       BL               clear_array
+  125 00000064 4897            LDR              R0, =MSG_CLOSING
   126 00000066 F7FF FFFE       BL               LCD_print_string
   127 0000006A F04F 00C0       MOV              R0, #0xC0
   128 0000006E F7FF FFFE       BL               LCD_command
-  129 00000072 4890            LDR              R0, =MSG_PWscreen
+  129 00000072 4892            LDR              R0, =MSG_PWscreen
   130 00000074 F7FF FFFE       BL               LCD_print_string
   131 00000078 F04F 5100       LDR              R1, =ARRAY_PW
   132 0000007C F04F 0200       MOV              R2, #0
@@ -206,19 +206,19 @@ ARM Macro Assembler    Page 4
   145 000000A2         
   146 000000A2         Closed
   147 000000A2 F7FF FFFE       BL               LCD_reset
-  148 000000A6 4886            LDR              R0, =MSG_CLOSED
+  148 000000A6 4888            LDR              R0, =MSG_CLOSED
   149 000000A8 F7FF FFFE       BL               LCD_print_string
   150 000000AC F04F 00C0       MOV              R0, #0xC0
   151 000000B0 F7FF FFFE       BL               LCD_command
-  152 000000B4 487F            LDR              R0, =MSG_PWscreen
+  152 000000B4 4881            LDR              R0, =MSG_PWscreen
   153 000000B6 F7FF FFFE       BL               LCD_print_string
   154 000000BA F04F 0400       MOV              R4, #0
-  155 000000BE 497E            LDR              R1, =INPUT_PW ; Array pointer
+  155 000000BE 4980            LDR              R1, =INPUT_PW ; Array pointer
   156 000000C0 F04F 0205       MOV              R2, #5      ; Size of the array
                                                              to clear (4 digits
                                                              + null-terminator)
                                                             
-  157 000000C4 F000 F89D       BL               clear_array
+  157 000000C4 F000 F8A0       BL               clear_array
   158 000000C8         wait_click_closed
   159 000000C8 F7FF FFFE       BL               MKBOARD_getValuePressed
   160 000000CC 28FF            CMP              R0, #0xFF
@@ -233,7 +233,7 @@ ARM Macro Assembler    Page 4
                         the password and display MSG_CLOSING
   169 000000D8         Password_Check
   170 000000D8         ; Call the compare_arrays function
-  171 000000D8 4977            LDR              R1, =INPUT_PW ; Pointer to the 
+  171 000000D8 4979            LDR              R1, =INPUT_PW ; Pointer to the 
                                                             first array (INPUT_
                                                             PW)
   172 000000DA F04F 5200       LDR              R2, =ARRAY_PW ; Pointer to the 
@@ -242,7 +242,7 @@ ARM Macro Assembler    Page 4
   173 000000DE F04F 0304       MOV              R3, #4      ; Size of the array
                                                             s to compare (4 in 
                                                             your case)
-  174 000000E2 F000 F899       BL               compare_arrays 
+  174 000000E2 F000 F89C       BL               compare_arrays 
                                                             ; Call the function
                                                             
   175 000000E6         ; Check the result in R0
@@ -256,7 +256,7 @@ ARM Macro Assembler    Page 4
   183 000000EC 2C04            CMP              R4, #4
   184 000000EE D0A3            BEQ              wait_click_open
   185 000000F0         ; Store the pressed key value in ARRAY_PW
-  186 000000F0 4971            LDR              R1, =INPUT_PW
+  186 000000F0 4973            LDR              R1, =INPUT_PW
   187 000000F2 4421            ADD              R1, R1, R4
 
 
@@ -286,7 +286,7 @@ ARM Macro Assembler    Page 5
   206 00000112 2C04            CMP              R4, #4
   207 00000114 D0D8            BEQ              wait_click_closed
   208 00000116         ; Store the pressed key value in ARRAY_PW
-  209 00000116 4968            LDR              R1, =INPUT_PW
+  209 00000116 496A            LDR              R1, =INPUT_PW
   210 00000118 4421            ADD              R1, R1, R4
   211 0000011A 6008            STR              R0, [R1]
   212 0000011C         ; Increment the password length counter
@@ -313,7 +313,7 @@ ARM Macro Assembler    Page 5
   232 00000142         
   233 00000142         Opening
   234 00000142 F7FF FFFE       BL               LCD_reset
-  235 00000146 485F            LDR              R0, =MSG_OPENING
+  235 00000146 4861            LDR              R0, =MSG_OPENING
   236 00000148 F7FF FFFE       BL               LCD_print_string
   237 0000014C F241 3088       LDR              R0, =5000
   238 00000150 F7FF FFFE       BL               SysTick_Wait1ms
@@ -321,7 +321,7 @@ ARM Macro Assembler    Page 5
   240 00000158         
   241 00000158         attempt_screen
   242 00000158 F7FF FFFE       BL               LCD_reset
-  243 0000015C 485A            LDR              R0, =MSG_AttemptScreen
+  243 0000015C 485C            LDR              R0, =MSG_AttemptScreen
   244 0000015E F7FF FFFE       BL               LCD_print_string
 
 
@@ -335,250 +335,250 @@ ARM Macro Assembler    Page 6
   248 0000016E         
   249 0000016E         Blocked
   250 0000016E F7FF FFFE       BL               LCD_reset
-  251 00000172 4856            LDR              R0, =MSG_BLOCKED
+  251 00000172 4858            LDR              R0, =MSG_BLOCKED
   252 00000174 F7FF FFFE       BL               LCD_print_string
-  253 00000178 F7FF FFFE       BL               EnableInterrupt
-  254 0000017C F04F 0400       MOV              R4, #0
-  255 00000180 494D            LDR              R1, =INPUT_PW ; Array pointer
-  256 00000182 F04F 0205       MOV              R2, #5      ; Size of the array
+  253 00000178         ; BL EnableInterrupt
+  254 00000178 F04F 0400       MOV              R4, #0
+  255 0000017C 4950            LDR              R1, =INPUT_PW ; Array pointer
+  256 0000017E F04F 0205       MOV              R2, #5      ; Size of the array
                                                              to clear (4 digits
                                                              + null-terminator)
                                                             
-  257 00000186 F000 F83C       BL               clear_array
-  258 0000018A         
-  259 0000018A         enter_pw_master_interrupt
-  260 0000018A F7FF FFFE       BL               LCD_reset
-  261 0000018E 484F            LDR              R0, =MSG_BLOCKED
-  262 00000190 F7FF FFFE       BL               LCD_print_string
-  263 00000194 F04F 00C0       MOV              R0, #0xC0
-  264 00000198 F7FF FFFE       BL               LCD_command
-  265 0000019C 4845            LDR              R0, =MSG_PWscreen
-  266 0000019E F7FF FFFE       BL               LCD_print_string
-  267 000001A2         wait_click_blocked
-  268 000001A2 F7FF FFFE       BL               MKBOARD_getValuePressed
-  269 000001A6 28FF            CMP              R0, #0xFF
-  270 000001A8 D0FB            BEQ              wait_click_blocked
-  271 000001AA         ; Check if the pressed key is 'E'
-  272 000001AA 280E            CMP              R0, #0x0E
-  273 000001AC D10A            BNE              not_e_key_blocked
-  274 000001AE         ; Check if the password has 4 digits
-  275 000001AE 2C04            CMP              R4, #4
-  276 000001B0 D1F7            BNE              wait_click_blocked
-  277 000001B2         Password_Check_master
-  278 000001B2         ; Call the compare_arrays function
-  279 000001B2 4941            LDR              R1, =INPUT_PW ; Pointer to the 
+  257 00000182 F000 F841       BL               clear_array
+  258 00000186 F640 30B8       LDR              R0, =3000
+  259 0000018A F7FF FFFE       BL               SysTick_Wait1ms
+  260 0000018E E7EE            B                Blocked
+  261 00000190         
+  262 00000190         enter_pw_master_interrupt
+  263 00000190 F7FF FFFE       BL               LCD_reset
+  264 00000194 484F            LDR              R0, =MSG_BLOCKED
+  265 00000196 F7FF FFFE       BL               LCD_print_string
+  266 0000019A F04F 00C0       MOV              R0, #0xC0
+  267 0000019E F7FF FFFE       BL               LCD_command
+  268 000001A2 4846            LDR              R0, =MSG_PWscreen
+  269 000001A4 F7FF FFFE       BL               LCD_print_string
+  270 000001A8         wait_click_blocked
+  271 000001A8 F7FF FFFE       BL               MKBOARD_getValuePressed
+  272 000001AC 28FF            CMP              R0, #0xFF
+  273 000001AE D0FB            BEQ              wait_click_blocked
+  274 000001B0         ; Check if the pressed key is 'E'
+  275 000001B0 280E            CMP              R0, #0x0E
+  276 000001B2 D10A            BNE              not_e_key_blocked
+  277 000001B4         ; Check if the password has 4 digits
+  278 000001B4 2C04            CMP              R4, #4
+  279 000001B6 D1F7            BNE              wait_click_blocked
+  280 000001B8         Password_Check_master
+  281 000001B8         ; Call the compare_arrays function
+  282 000001B8 4941            LDR              R1, =INPUT_PW ; Pointer to the 
                                                             first array (INPUT_
                                                             PW)
-  280 000001B4 4A46            LDR              R2, =MASTER_PW ; Pointer to the
+  283 000001BA 4A47            LDR              R2, =MASTER_PW ; Pointer to the
                                                              second array (ARRA
                                                             Y_PW)
-  281 000001B6 F04F 0304       MOV              R3, #4      ; Size of the array
+  284 000001BC F04F 0304       MOV              R3, #4      ; Size of the array
                                                             s to compare (4 in 
                                                             your case)
-  282 000001BA F000 F82D       BL               compare_arrays 
+  285 000001C0 F000 F82D       BL               compare_arrays 
                                                             ; Call the function
                                                             
-  283 000001BE         ; Check the result in R0
-  284 000001BE 2801            CMP              R0, #1
-  285 000001C0 D0BF            BEQ              Opening
-  286 000001C2 D1D4            BNE              Blocked
-  287 000001C4         
-  288 000001C4         not_e_key_blocked
-  289 000001C4         ; Check if the password already has 4 digits
-  290 000001C4 2C04            CMP              R4, #4
-  291 000001C6 D0EC            BEQ              wait_click_blocked
-  292 000001C8         ; Store the pressed key value in ARRAY_PW
+  286 000001C4         ; Check the result in R0
+  287 000001C4 2801            CMP              R0, #1
+  288 000001C6 D0BC            BEQ              Opening
+  289 000001C8 D1D1            BNE              Blocked
+  290 000001CA         
+  291 000001CA         not_e_key_blocked
+  292 000001CA         ; Check if the password already has 4 digits
 
 
 
 ARM Macro Assembler    Page 7 
 
 
-  293 000001C8 493B            LDR              R1, =INPUT_PW
-  294 000001CA 4421            ADD              R1, R1, R4
-  295 000001CC 6008            STR              R0, [R1]
-  296 000001CE         ; Increment the password length counter
-  297 000001CE F104 0401       ADD              R4, R4, #1
-  298 000001D2         ; Check if the password length counter is now 4
-  299 000001D2 2C05            CMP              R4, #5
-  300 000001D4 D104            BNE              not_final_digit_blocked
-  301 000001D6         ; If the password length counter is now 4, null-terminat
+  293 000001CA 2C04            CMP              R4, #4
+  294 000001CC D0EC            BEQ              wait_click_blocked
+  295 000001CE         ; Store the pressed key value in ARRAY_PW
+  296 000001CE 493C            LDR              R1, =INPUT_PW
+  297 000001D0 4421            ADD              R1, R1, R4
+  298 000001D2 6008            STR              R0, [R1]
+  299 000001D4         ; Increment the password length counter
+  300 000001D4 F104 0401       ADD              R4, R4, #1
+  301 000001D8         ; Check if the password length counter is now 4
+  302 000001D8 2C05            CMP              R4, #5
+  303 000001DA D104            BNE              not_final_digit_blocked
+  304 000001DC         ; If the password length counter is now 4, null-terminat
                        e the ARRAY_PW string
-  302 000001D6 F101 0101       ADD              R1, R1, #1
-  303 000001DA F04F 0000       MOV              R0, #0
-  304 000001DE 6008            STR              R0, [R1]
-  305 000001E0         not_final_digit_blocked
-  306 000001E0         ; Convert the value to ASCII and display it
-  307 000001E0 F7FF FFFE       BL               MKBOARD_valueToASCII
-  308 000001E4 F7FF FFFE       BL               LCD_write_data
-  309 000001E8 E76E            B                wait_click_closed
-  310 000001EA         
-  311 000001EA         copy_array
-  312 000001EA B50E            PUSH             {R1, R2, R3, LR} ; Save the reg
+  305 000001DC F101 0101       ADD              R1, R1, #1
+  306 000001E0 F04F 0000       MOV              R0, #0
+  307 000001E4 6008            STR              R0, [R1]
+  308 000001E6         not_final_digit_blocked
+  309 000001E6         ; Convert the value to ASCII and display it
+  310 000001E6 F7FF FFFE       BL               MKBOARD_valueToASCII
+  311 000001EA F7FF FFFE       BL               LCD_write_data
+  312 000001EE E76B            B                wait_click_closed
+  313 000001F0         
+  314 000001F0         copy_array
+  315 000001F0 B50E            PUSH             {R1, R2, R3, LR} ; Save the reg
                                                             isters
-  313 000001EC         
-  314 000001EC         copy_loop
-  315 000001EC 7808            LDRB             R0, [R1]    ; Load a byte from 
+  316 000001F2         
+  317 000001F2         copy_loop
+  318 000001F2 7808            LDRB             R0, [R1]    ; Load a byte from 
                                                             the source array
-  316 000001EE 7010            STRB             R0, [R2]    ; Store the byte in
+  319 000001F4 7010            STRB             R0, [R2]    ; Store the byte in
                                                              the destination ar
                                                             ray
-  317 000001F0 F101 0101       ADD              R1, R1, #1  ; Increment the sou
+  320 000001F6 F101 0101       ADD              R1, R1, #1  ; Increment the sou
                                                             rce array pointer
-  318 000001F4 F102 0201       ADD              R2, R2, #1  ; Increment the des
+  321 000001FA F102 0201       ADD              R2, R2, #1  ; Increment the des
                                                             tination array poin
                                                             ter
-  319 000001F8 1E5B            SUBS             R3, R3, #1  ; Decrement the siz
+  322 000001FE 1E5B            SUBS             R3, R3, #1  ; Decrement the siz
                                                             e counter
-  320 000001FA D1F7            BNE              copy_loop   ; If the size count
+  323 00000200 D1F7            BNE              copy_loop   ; If the size count
                                                             er is not zero, con
                                                             tinue copying
-  321 000001FC E8BD 400E       POP              {R1, R2, R3, LR} ; Restore the 
+  324 00000202 E8BD 400E       POP              {R1, R2, R3, LR} ; Restore the 
                                                             registers
-  322 00000200 4770            BX               LR          ; Return to the cal
+  325 00000206 4770            BX               LR          ; Return to the cal
                                                             ling function
-  323 00000202         
-  324 00000202         clear_array
-  325 00000202 B506            PUSH             {R1, R2, LR} ; Save the registe
+  326 00000208         
+  327 00000208         clear_array
+  328 00000208 B506            PUSH             {R1, R2, LR} ; Save the registe
                                                             rs
-  326 00000204         
-  327 00000204         clear_loop
-  328 00000204 F04F 0000       MOV              R0, #0      ; Load the value 0
-  329 00000208 7008            STRB             R0, [R1]    ; Store the value 0
+  329 0000020A         
+  330 0000020A         clear_loop
+  331 0000020A F04F 0000       MOV              R0, #0      ; Load the value 0
+  332 0000020E 7008            STRB             R0, [R1]    ; Store the value 0
                                                              in the array
-  330 0000020A F101 0101       ADD              R1, R1, #1  ; Increment the arr
+  333 00000210 F101 0101       ADD              R1, R1, #1  ; Increment the arr
                                                             ay pointer
-  331 0000020E 1E52            SUBS             R2, R2, #1  ; Decrement the siz
+  334 00000214 1E52            SUBS             R2, R2, #1  ; Decrement the siz
                                                             e counter
-  332 00000210 D1F8            BNE              clear_loop  ; If the size count
-                                                            er is not zero, con
-                                                            tinue clearing
 
 
 
 ARM Macro Assembler    Page 8 
 
 
-  333 00000212 E8BD 4006       POP              {R1, R2, LR} ; Restore the regi
+  335 00000216 D1F8            BNE              clear_loop  ; If the size count
+                                                            er is not zero, con
+                                                            tinue clearing
+  336 00000218 E8BD 4006       POP              {R1, R2, LR} ; Restore the regi
                                                             sters
-  334 00000216 4770            BX               LR          ; Return to the cal
+  337 0000021C 4770            BX               LR          ; Return to the cal
                                                             ling function
-  335 00000218         
-  336 00000218         ; Function to compare two arrays
-  337 00000218         ; R1 - Pointer to the first array (INPUT_PW)
-  338 00000218         ; R2 - Pointer to the second array (ARRAY_PW)
-  339 00000218         ; R3 - Size of the arrays to compare (4 in your case)
-  340 00000218         ; Returns: R0 = 1 if arrays are equal, R0 = 0 if arrays 
+  338 0000021E         
+  339 0000021E         ; Function to compare two arrays
+  340 0000021E         ; R1 - Pointer to the first array (INPUT_PW)
+  341 0000021E         ; R2 - Pointer to the second array (ARRAY_PW)
+  342 0000021E         ; R3 - Size of the arrays to compare (4 in your case)
+  343 0000021E         ; Returns: R0 = 1 if arrays are equal, R0 = 0 if arrays 
                        are not equal
-  341 00000218         
-  342 00000218         compare_arrays
-  343 00000218 B50E            PUSH             {R1, R2, R3, LR} ; Save the reg
+  344 0000021E         
+  345 0000021E         compare_arrays
+  346 0000021E B50E            PUSH             {R1, R2, R3, LR} ; Save the reg
                                                             isters
-  344 0000021A         
-  345 0000021A         compare_loop
-  346 0000021A 7808            LDRB             R0, [R1]    ; Load a byte from 
+  347 00000220         
+  348 00000220         compare_loop
+  349 00000220 7808            LDRB             R0, [R1]    ; Load a byte from 
                                                             the first array
-  347 0000021C 7814            LDRB             R4, [R2]    ; Load a byte from 
+  350 00000222 7814            LDRB             R4, [R2]    ; Load a byte from 
                                                             the second array
-  348 0000021E 42A0            CMP              R0, R4      ; Compare the loade
+  351 00000224 42A0            CMP              R0, R4      ; Compare the loade
                                                             d bytes
-  349 00000220 D108            BNE              not_equal   ; If the bytes are 
+  352 00000226 D108            BNE              not_equal   ; If the bytes are 
                                                             not equal, jump to 
                                                             not_equal
-  350 00000222         
-  351 00000222 F101 0101       ADD              R1, R1, #1  ; Increment the fir
+  353 00000228         
+  354 00000228 F101 0101       ADD              R1, R1, #1  ; Increment the fir
                                                             st array pointer
-  352 00000226 F102 0201       ADD              R2, R2, #1  ; Increment the sec
+  355 0000022C F102 0201       ADD              R2, R2, #1  ; Increment the sec
                                                             ond array pointer
-  353 0000022A 1E5B            SUBS             R3, R3, #1  ; Decrement the siz
+  356 00000230 1E5B            SUBS             R3, R3, #1  ; Decrement the siz
                                                             e counter
-  354 0000022C D1F5            BNE              compare_loop ; If the size coun
+  357 00000232 D1F5            BNE              compare_loop ; If the size coun
                                                             ter is not zero, co
                                                             ntinue comparing
-  355 0000022E         
-  356 0000022E         ; Arrays are equal
-  357 0000022E F04F 0001       MOV              R0, #1
-  358 00000232 E001            B                finish_compare
-  359 00000234         
-  360 00000234         not_equal
-  361 00000234         ; Arrays are not equal
-  362 00000234 F04F 0000       MOV              R0, #0
-  363 00000238         
-  364 00000238         finish_compare
-  365 00000238 E8BD 400E       POP              {R1, R2, R3, LR} ; Restore the 
+  358 00000234         
+  359 00000234         ; Arrays are equal
+  360 00000234 F04F 0001       MOV              R0, #1
+  361 00000238 E001            B                finish_compare
+  362 0000023A         
+  363 0000023A         not_equal
+  364 0000023A         ; Arrays are not equal
+  365 0000023A F04F 0000       MOV              R0, #0
+  366 0000023E         
+  367 0000023E         finish_compare
+  368 0000023E E8BD 400E       POP              {R1, R2, R3, LR} ; Restore the 
                                                             registers
-  366 0000023C 4770            BX               LR          ; Return to the cal
+  369 00000242 4770            BX               LR          ; Return to the cal
                                                             ling function
-  367 0000023E         
-  368 0000023E         ; If 'E' is pressed and the password has 4 digits, store
+  370 00000244         
+  371 00000244         ; If 'E' is pressed and the password has 4 digits, store
                         the password and display MSG_CLOSING
-  369 0000023E         
-  370 0000023E 37 37 37 
+  372 00000244         
+  373 00000244 37 37 37 
               37 00    MASTER_PW
-                               DCB              "7777",0
-  371 00000243 43 6F 66 
-              72 65 20 
 
 
 
 ARM Macro Assembler    Page 9 
 
 
+                               DCB              "7777",0
+  374 00000249 43 6F 66 
+              72 65 20 
               41 62 65 
               72 74 6F 
               20 3A 29 
               21 00    MSG_OPEN
                                DCB              "Cofre Aberto :)!",0
-  372 00000254 43 6F 66 
+  375 0000025A 43 6F 66 
               72 65 20 
               41 62 72 
               69 6E 64 
               6F 21 00 MSG_OPENING
                                DCB              "Cofre Abrindo!",0
-  373 00000263 43 6F 66 
+  376 00000269 43 6F 66 
               72 65 20 
               46 65 63 
               68 61 6E 
               64 6F 2E 
               2E 2E 00 MSG_CLOSING
                                DCB              "Cofre Fechando...",0
-  374 00000275 43 6F 66 
+  377 0000027B 43 6F 66 
               72 65 20 
               46 65 63 
               68 61 64 
               6F 20 21 
               00       MSG_CLOSED
                                DCB              "Cofre Fechado !",0
-  375 00000285 43 6F 66 
+  378 0000028B 43 6F 66 
               72 65 20 
               54 72 61 
               76 61 64 
               6F 20 21 
               00       MSG_BLOCKED
                                DCB              "Cofre Travado !",0
-  376 00000295 20 50 57 
+  379 0000029B 20 50 57 
               3A 00    MSG_PWscreen
                                DCB              " PW:",0
-  377 0000029A 54 65 6E 
+  380 000002A0 54 65 6E 
               74 61 74 
               69 76 61 
               20 2D 2D 
               00       MSG_AttemptScreen
                                DCB              "Tentativa --",0
-  378 000002A7 20 54 65 
+  381 000002AD 20 54 65 
               73 74 65 
               20 00    STR2    DCB              " Teste ",0
-  379 000002AF         
-  380 000002AF 00              ALIGN                        ;Garante que o fim 
+  382 000002B5         
+  383 000002B5 00 00 00        ALIGN                        ;Garante que o fim 
                                                             da seção está alinh
                                                             ada 
-  381 000002B0                 END                          ;Fim do arquivo
+  384 000002B8                 END                          ;Fim do arquivo
               00000000 
               00000000 
               20000008 
-              00000000 
-              00000000 
-              00000000 
               00000000 
               00000000 
               00000000 
@@ -589,6 +589,9 @@ ARM Macro Assembler    Page 9
 ARM Macro Assembler    Page 10 
 
 
+              00000000 
+              00000000 
+              00000000 
               00000000 
               00000000 
               00000000 
@@ -633,7 +636,8 @@ Symbol: Blocked
       At line 249 in file main.s
    Uses
       At line 230 in file main.s
-      At line 286 in file main.s
+      At line 260 in file main.s
+      At line 289 in file main.s
 
 Closed 000000A2
 
@@ -652,79 +656,79 @@ Symbol: Closing
    Uses
       None
 Comment: Closing unused
-MASTER_PW 0000023E
+MASTER_PW 00000244
 
 Symbol: MASTER_PW
    Definitions
-      At line 370 in file main.s
+      At line 373 in file main.s
    Uses
-      At line 280 in file main.s
+      At line 283 in file main.s
 Comment: MASTER_PW used once
-MSG_AttemptScreen 0000029A
+MSG_AttemptScreen 000002A0
 
 Symbol: MSG_AttemptScreen
    Definitions
-      At line 377 in file main.s
+      At line 380 in file main.s
    Uses
       At line 243 in file main.s
 Comment: MSG_AttemptScreen used once
-MSG_BLOCKED 00000285
+MSG_BLOCKED 0000028B
 
 Symbol: MSG_BLOCKED
    Definitions
-      At line 375 in file main.s
+      At line 378 in file main.s
    Uses
       At line 251 in file main.s
-      At line 261 in file main.s
-
+      At line 264 in file main.s
 
 
 
 ARM Macro Assembler    Page 2 Alphabetic symbol ordering
 Relocatable symbols
 
-MSG_CLOSED 00000275
+
+MSG_CLOSED 0000027B
 
 Symbol: MSG_CLOSED
    Definitions
-      At line 374 in file main.s
+      At line 377 in file main.s
    Uses
       At line 148 in file main.s
 Comment: MSG_CLOSED used once
-MSG_CLOSING 00000263
+MSG_CLOSING 00000269
 
 Symbol: MSG_CLOSING
    Definitions
-      At line 373 in file main.s
+      At line 376 in file main.s
    Uses
       At line 125 in file main.s
 Comment: MSG_CLOSING used once
-MSG_OPEN 00000243
+MSG_OPEN 00000249
 
 Symbol: MSG_OPEN
    Definitions
-      At line 371 in file main.s
+      At line 374 in file main.s
    Uses
       At line 98 in file main.s
 Comment: MSG_OPEN used once
-MSG_OPENING 00000254
+MSG_OPENING 0000025A
 
 Symbol: MSG_OPENING
    Definitions
-      At line 372 in file main.s
+      At line 375 in file main.s
    Uses
       At line 235 in file main.s
 Comment: MSG_OPENING used once
-MSG_PWscreen 00000295
+MSG_PWscreen 0000029B
 
 Symbol: MSG_PWscreen
    Definitions
-      At line 376 in file main.s
+      At line 379 in file main.s
    Uses
       At line 102 in file main.s
       At line 129 in file main.s
       At line 152 in file main.s
-      At line 265 in file main.s
+      At line 268 in file main.s
 
 MainLoop 00000018
 
@@ -741,13 +745,13 @@ Symbol: Opening
       At line 233 in file main.s
    Uses
       At line 177 in file main.s
-      At line 285 in file main.s
 
 
 
 ARM Macro Assembler    Page 3 Alphabetic symbol ordering
 Relocatable symbols
 
+      At line 288 in file main.s
 
 Password_Check 000000D8
 
@@ -757,19 +761,19 @@ Symbol: Password_Check
    Uses
       None
 Comment: Password_Check unused
-Password_Check_master 000001B2
+Password_Check_master 000001B8
 
 Symbol: Password_Check_master
    Definitions
-      At line 277 in file main.s
+      At line 280 in file main.s
    Uses
       None
 Comment: Password_Check_master unused
-STR2 000002A7
+STR2 000002AD
 
 Symbol: STR2
    Definitions
-      At line 378 in file main.s
+      At line 381 in file main.s
    Uses
       None
 Comment: STR2 unused
@@ -797,11 +801,11 @@ Symbol: attempt_screen
    Uses
       At line 231 in file main.s
 Comment: attempt_screen used once
-clear_array 00000202
+clear_array 00000208
 
 Symbol: clear_array
    Definitions
-      At line 324 in file main.s
+      At line 327 in file main.s
    Uses
       At line 124 in file main.s
       At line 157 in file main.s
@@ -809,50 +813,50 @@ Symbol: clear_array
 
 
 
-
 ARM Macro Assembler    Page 4 Alphabetic symbol ordering
 Relocatable symbols
 
-clear_loop 00000204
+
+clear_loop 0000020A
 
 Symbol: clear_loop
    Definitions
-      At line 327 in file main.s
+      At line 330 in file main.s
    Uses
-      At line 332 in file main.s
+      At line 335 in file main.s
 Comment: clear_loop used once
-compare_arrays 00000218
+compare_arrays 0000021E
 
 Symbol: compare_arrays
    Definitions
-      At line 342 in file main.s
+      At line 345 in file main.s
    Uses
       At line 174 in file main.s
-      At line 282 in file main.s
+      At line 285 in file main.s
 
-compare_loop 0000021A
+compare_loop 00000220
 
 Symbol: compare_loop
    Definitions
-      At line 345 in file main.s
+      At line 348 in file main.s
    Uses
-      At line 354 in file main.s
+      At line 357 in file main.s
 Comment: compare_loop used once
-copy_array 000001EA
+copy_array 000001F0
 
 Symbol: copy_array
    Definitions
-      At line 311 in file main.s
+      At line 314 in file main.s
    Uses
       At line 121 in file main.s
 Comment: copy_array used once
-copy_loop 000001EC
+copy_loop 000001F2
 
 Symbol: copy_loop
    Definitions
-      At line 314 in file main.s
+      At line 317 in file main.s
    Uses
-      At line 320 in file main.s
+      At line 323 in file main.s
 Comment: copy_loop used once
 display_password_loop 00000080
 
@@ -862,35 +866,35 @@ Symbol: display_password_loop
    Uses
       At line 140 in file main.s
 Comment: display_password_loop used once
-enter_pw_master_interrupt 0000018A
+enter_pw_master_interrupt 00000190
 
 Symbol: enter_pw_master_interrupt
    Definitions
-      At line 259 in file main.s
+      At line 262 in file main.s
    Uses
       At line 72 in file main.s
 Comment: enter_pw_master_interrupt used once
-finish_compare 00000238
-
+finish_compare 0000023E
 
 
 
 ARM Macro Assembler    Page 5 Alphabetic symbol ordering
 Relocatable symbols
 
+
 Symbol: finish_compare
    Definitions
-      At line 364 in file main.s
+      At line 367 in file main.s
    Uses
-      At line 358 in file main.s
+      At line 361 in file main.s
 Comment: finish_compare used once
-not_e_key_blocked 000001C4
+not_e_key_blocked 000001CA
 
 Symbol: not_e_key_blocked
    Definitions
-      At line 288 in file main.s
+      At line 291 in file main.s
    Uses
-      At line 273 in file main.s
+      At line 276 in file main.s
 Comment: not_e_key_blocked used once
 not_e_key_closed 00000112
 
@@ -908,21 +912,21 @@ Symbol: not_e_key_open
    Uses
       At line 111 in file main.s
 Comment: not_e_key_open used once
-not_equal 00000234
+not_equal 0000023A
 
 Symbol: not_equal
    Definitions
-      At line 360 in file main.s
+      At line 363 in file main.s
    Uses
-      At line 349 in file main.s
+      At line 352 in file main.s
 Comment: not_equal used once
-not_final_digit_blocked 000001E0
+not_final_digit_blocked 000001E6
 
 Symbol: not_final_digit_blocked
    Definitions
-      At line 305 in file main.s
+      At line 308 in file main.s
    Uses
-      At line 300 in file main.s
+      At line 303 in file main.s
 Comment: not_final_digit_blocked used once
 not_final_digit_closed 0000012E
 
@@ -936,25 +940,25 @@ not_final_digit_open 00000108
 
 Symbol: not_final_digit_open
    Definitions
-      At line 198 in file main.s
 
 
 
 ARM Macro Assembler    Page 6 Alphabetic symbol ordering
 Relocatable symbols
 
+      At line 198 in file main.s
    Uses
       At line 193 in file main.s
 Comment: not_final_digit_open used once
-wait_click_blocked 000001A2
+wait_click_blocked 000001A8
 
 Symbol: wait_click_blocked
    Definitions
-      At line 267 in file main.s
-   Uses
       At line 270 in file main.s
-      At line 276 in file main.s
-      At line 291 in file main.s
+   Uses
+      At line 273 in file main.s
+      At line 279 in file main.s
+      At line 294 in file main.s
 
 wait_click_closed 000000C8
 
@@ -966,7 +970,7 @@ Symbol: wait_click_closed
       At line 167 in file main.s
       At line 207 in file main.s
       At line 225 in file main.s
-      At line 309 in file main.s
+      At line 312 in file main.s
 
 wait_click_open 00000038
 
@@ -1009,8 +1013,8 @@ Symbol: INPUT_PW
       At line 186 in file main.s
       At line 209 in file main.s
       At line 255 in file main.s
-      At line 279 in file main.s
-      At line 293 in file main.s
+      At line 282 in file main.s
+      At line 296 in file main.s
 
 NUM_ATTEMPTS 20000004
 
@@ -1041,8 +1045,8 @@ Symbol: EnableInterrupt
    Definitions
       At line 66 in file main.s
    Uses
-      At line 253 in file main.s
-Comment: EnableInterrupt used once
+      None
+Comment: EnableInterrupt unused
 GPIOPortJ_Handler 00000000
 
 Symbol: GPIOPortJ_Handler
@@ -1068,7 +1072,7 @@ Symbol: LCD_command
       At line 101 in file main.s
       At line 128 in file main.s
       At line 151 in file main.s
-      At line 264 in file main.s
+      At line 267 in file main.s
 
 LCD_init 00000000
 
@@ -1099,8 +1103,8 @@ External symbols
       At line 236 in file main.s
       At line 244 in file main.s
       At line 252 in file main.s
-      At line 262 in file main.s
-      At line 266 in file main.s
+      At line 265 in file main.s
+      At line 269 in file main.s
 
 LCD_reset 00000000
 
@@ -1114,7 +1118,7 @@ Symbol: LCD_reset
       At line 234 in file main.s
       At line 242 in file main.s
       At line 250 in file main.s
-      At line 260 in file main.s
+      At line 263 in file main.s
 
 LCD_write_data 00000000
 
@@ -1125,7 +1129,7 @@ Symbol: LCD_write_data
       At line 136 in file main.s
       At line 201 in file main.s
       At line 224 in file main.s
-      At line 308 in file main.s
+      At line 311 in file main.s
 
 LEDS_AND_DISPLAYS_init 00000000
 
@@ -1143,7 +1147,7 @@ Symbol: MKBOARD_getValuePressed
    Uses
       At line 106 in file main.s
       At line 159 in file main.s
-      At line 268 in file main.s
+      At line 271 in file main.s
 
 MKBOARD_init 00000000
 
@@ -1168,7 +1172,7 @@ Symbol: MKBOARD_valueToASCII
       At line 135 in file main.s
       At line 200 in file main.s
       At line 223 in file main.s
-      At line 307 in file main.s
+      At line 310 in file main.s
 
 PLL_Init 00000000
 
@@ -1212,16 +1216,17 @@ Symbol: SysTick_Wait1ms
       At line 143 in file main.s
       At line 238 in file main.s
       At line 246 in file main.s
+      At line 259 in file main.s
 Warning: SysTick_Wait1ms multiply defined
 SysTick_Wait1us 00000000
 
-Symbol: SysTick_Wait1us
 
 
 
 ARM Macro Assembler    Page 4 Alphabetic symbol ordering
 External symbols
 
+Symbol: SysTick_Wait1us
    Definitions
       At line 69 in file main.s
    Uses
