@@ -463,7 +463,7 @@ ARM Macro Assembler    Page 8
   183 00000068         
   184 00000068         ; config da interrupção
   185 00000068         
-  186 00000068         ;desabilita as interrupcoes
+  186 00000068         ;desabilita as interrupcoes do port J (0:
   187 00000068 483F            LDR              R0, =GPIO_PORTJ_AHB_IM_R
   188 0000006A 6801            LDR              R1, [R0]    ;pega info
   189 0000006C F021 0101       BIC              R1, #2_1    ;reseta bits
@@ -645,17 +645,17 @@ ARM Macro Assembler    Page 10
               4005D3FC 
               400603FC 
               40060414 
-Command Line: --debug --xref --diag_suppress=9931,A1950W --cpu=Cortex-M4.fp.sp 
---depend=.\objects\gpio.d -o.\objects\gpio.o -IC:\Users\alfon\AppData\Local\Arm
-\Packs\Keil\TM4C_DFP\1.1.0\Device\Include\TM4C129 --predefine="__EVAL SETA 1" -
+Command Line: --debug --xref --diag_suppress=9931 --cpu=Cortex-M4.fp.sp --depen
+d=.\objects\gpio.d -o.\objects\gpio.o -IC:\Users\roger\AppData\Local\Arm\Packs\
+Keil\TM4C_DFP\1.1.0\Device\Include\TM4C129 --predefine="__EVAL SETA 1" --predef
 
 
 
 ARM Macro Assembler    Page 11 
 
 
--predefine="__UVISION_VERSION SETA 538" --predefine="TM4C1294NCPDT SETA 1" --li
-st=.\listings\gpio.lst gpio.s
+ine="__UVISION_VERSION SETA 536" --predefine="TM4C1294NCPDT SETA 1" --list=.\li
+stings\gpio.lst gpio.s
 
 
 
