@@ -43,8 +43,8 @@
 	
 		IMPORT  GPIO_Init
         IMPORT  PortF_Output
-        IMPORT PortJ_Input
-		IMPORT GPIOPortJ_Handler
+        IMPORT  PortJ_Input
+		IMPORT  GPIOPortJ_Handler
 			
 		IMPORT LCD_init
 		IMPORT LCD_reset
@@ -63,9 +63,13 @@
 		IMPORT turn_DS1_ON
 		IMPORT turn_DS2_ON
 		
+		IMPORT EnableInterrupt
+		IMPORT DisableInterrupt
+		
 		IMPORT SysTick_Wait1us
 		IMPORT SysTick_Wait1ms
-			
+		
+		EXPORT enter_pw_master_interrupt
 ; ========================
 ; Constantes
 NUM_ATTEMPTS    EQU    0x20000004
@@ -86,9 +90,11 @@ Start
     BL MKBOARD_init
     BL LEDS_AND_DISPLAYS_init    
     ; Initialize the password length counter
-    MOV R4, #0
 MainLoop
 	BL LCD_reset
+	MOV R5, #0
+	MOV R4, #0
+;	BL DisableInterrupt
     LDR R0, =MSG_OPEN
     BL LCD_print_string
     MOV R0, #0xC0
@@ -115,11 +121,9 @@ Closing
     BL copy_array ; Call the copy_array function
     LDR R1, =INPUT_PW ; Array pointer
     MOV R2, #5 ; Size of the array to clear (4 digits + null-terminator)
-    BL clear_array ; Call the clear_array function
+	BL clear_array
 	LDR R0, =MSG_CLOSING
     BL LCD_print_string
-; Display the stored password on the second line
-; Print the MSG_PWscreen before displaying the stored password
     MOV R0, #0xC0
     BL LCD_command
     LDR R0, =MSG_PWscreen
@@ -138,7 +142,6 @@ display_password_loop
     LDR R0, =5000
     BL SysTick_Wait1ms
 	BL Closed
-; Display MSG_CLOSED
 
 Closed
     BL LCD_reset
@@ -149,6 +152,9 @@ Closed
     LDR R0, =MSG_PWscreen
     BL LCD_print_string
 	MOV R4, #0
+	LDR R1, =INPUT_PW ; Array pointer
+    MOV R2, #5 ; Size of the array to clear (4 digits + null-terminator)
+	BL clear_array
 wait_click_closed
     BL MKBOARD_getValuePressed
     CMP R0, #0xFF
@@ -160,34 +166,18 @@ wait_click_closed
     CMP R4, #4
     BNE wait_click_closed
 ; If 'E' is pressed and the password has 4 digits, store the password and display MSG_CLOSING
+Password_Check
+	; Call the compare_arrays function
+	LDR R1, =INPUT_PW ; Pointer to the first array (INPUT_PW)
+	LDR R2, =ARRAY_PW ; Pointer to the second array (ARRAY_PW)
+	MOV R3, #4 ; Size of the arrays to compare (4 in your case)
+	BL compare_arrays ; Call the function
+	; Check the result in R0
+	CMP R0, #1
+	BEQ Opening
+	BNE attempt_count
 
-
-copy_array
-    PUSH {R1, R2, R3, LR} ; Save the registers
-
-copy_loop
-    LDRB R0, [R1]  ; Load a byte from the source array
-    STRB R0, [R2]  ; Store the byte in the destination array
-    ADD R1, R1, #1 ; Increment the source array pointer
-    ADD R2, R2, #1 ; Increment the destination array pointer
-    SUBS R3, R3, #1 ; Decrement the size counter
-    BNE copy_loop  ; If the size counter is not zero, continue copying
-    POP {R1, R2, R3, LR} ; Restore the registers
-    BX LR ; Return to the calling function
-	
-clear_array
-    PUSH {R1, R2, LR} ; Save the registers
-
-clear_loop
-    MOV R0, #0      ; Load the value 0
-    STRB R0, [R1]   ; Store the value 0 in the array
-    ADD R1, R1, #1  ; Increment the array pointer
-    SUBS R2, R2, #1 ; Decrement the size counter
-    BNE clear_loop  ; If the size counter is not zero, continue clearing
-    POP {R1, R2, LR} ; Restore the registers
-    BX LR ; Return to the calling function
-
-; If 'E' is pressed and the password has 4 digits, store the password and display MSG_CLOSING
+; Display MSG_CLOSED
 not_e_key_open
 ; Check if the password already has 4 digits
     CMP R4, #4
@@ -233,13 +223,158 @@ not_final_digit_closed
     BL MKBOARD_valueToASCII
     BL LCD_write_data
     B wait_click_closed
+	
+attempt_count
+	ADD R5, R5, 1
+	CMP R5, #2
+	BEQ Blocked
+	BNE attempt_screen
 
-MSG_OPEN	DCB "Cofre Aberto :) !",0
-MSG_OPENING	DCB	"Cofre Abrindo",0
-MSG_CLOSING	DCB "Cofre Fechando",0
-MSG_CLOSED	DCB	"Cofre Fechado!  ",0
-MSG_LOCKED	DCB	"Cofre Travado!",0
+Opening
+    BL LCD_reset
+    LDR R0, =MSG_OPENING
+    BL LCD_print_string
+    LDR R0, =5000
+    BL SysTick_Wait1ms
+	BL MainLoop	
+	
+attempt_screen
+	BL LCD_reset
+    LDR R0, =MSG_AttemptScreen
+    BL LCD_print_string
+	LDR R0, =3000
+    BL SysTick_Wait1ms
+	BL Closed
+	
+Blocked
+	BL LCD_reset
+    LDR R0, =MSG_BLOCKED
+    BL LCD_print_string
+	BL EnableInterrupt
+	MOV R4, #0
+	LDR R1, =INPUT_PW ; Array pointer
+    MOV R2, #5 ; Size of the array to clear (4 digits + null-terminator)
+	BL clear_array
+
+enter_pw_master_interrupt
+	BL LCD_reset
+    LDR R0, =MSG_BLOCKED
+    BL LCD_print_string
+	MOV R0, #0xC0
+    BL LCD_command
+    LDR R0, =MSG_PWscreen
+	BL LCD_print_string
+wait_click_blocked
+    BL MKBOARD_getValuePressed
+    CMP R0, #0xFF
+    BEQ wait_click_blocked
+; Check if the pressed key is 'E'
+    CMP R0, #0x0E
+    BNE not_e_key_blocked
+; Check if the password has 4 digits
+    CMP R4, #4
+    BNE wait_click_blocked
+Password_Check_master
+	; Call the compare_arrays function
+	LDR R1, =INPUT_PW ; Pointer to the first array (INPUT_PW)
+	LDR R2, =MASTER_PW ; Pointer to the second array (ARRAY_PW)
+	MOV R3, #4 ; Size of the arrays to compare (4 in your case)
+	BL compare_arrays ; Call the function
+	; Check the result in R0
+	CMP R0, #1
+	BEQ Opening
+	BNE Blocked
+
+not_e_key_blocked
+; Check if the password already has 4 digits
+    CMP R4, #4
+    BEQ wait_click_blocked
+; Store the pressed key value in ARRAY_PW
+    LDR R1, =INPUT_PW
+    ADD R1, R1, R4
+    STR R0, [R1]
+; Increment the password length counter
+    ADD R4, R4, #1
+; Check if the password length counter is now 4
+    CMP R4, #5
+    BNE not_final_digit_blocked
+; If the password length counter is now 4, null-terminate the ARRAY_PW string
+    ADD R1, R1, #1
+    MOV R0, #0
+    STR R0, [R1]
+not_final_digit_blocked
+; Convert the value to ASCII and display it
+    BL MKBOARD_valueToASCII
+    BL LCD_write_data
+    B wait_click_closed
+
+copy_array
+    PUSH {R1, R2, R3, LR} ; Save the registers
+
+copy_loop
+    LDRB R0, [R1]  ; Load a byte from the source array
+    STRB R0, [R2]  ; Store the byte in the destination array
+    ADD R1, R1, #1 ; Increment the source array pointer
+    ADD R2, R2, #1 ; Increment the destination array pointer
+    SUBS R3, R3, #1 ; Decrement the size counter
+    BNE copy_loop  ; If the size counter is not zero, continue copying
+    POP {R1, R2, R3, LR} ; Restore the registers
+    BX LR ; Return to the calling function
+	
+clear_array
+    PUSH {R1, R2, LR} ; Save the registers
+
+clear_loop
+    MOV R0, #0      ; Load the value 0
+    STRB R0, [R1]   ; Store the value 0 in the array
+    ADD R1, R1, #1  ; Increment the array pointer
+    SUBS R2, R2, #1 ; Decrement the size counter
+    BNE clear_loop  ; If the size counter is not zero, continue clearing
+    POP {R1, R2, LR} ; Restore the registers
+    BX LR ; Return to the calling function
+
+; Function to compare two arrays
+; R1 - Pointer to the first array (INPUT_PW)
+; R2 - Pointer to the second array (ARRAY_PW)
+; R3 - Size of the arrays to compare (4 in your case)
+; Returns: R0 = 1 if arrays are equal, R0 = 0 if arrays are not equal
+
+compare_arrays
+    PUSH {R1, R2, R3, LR} ; Save the registers
+
+compare_loop
+    LDRB R0, [R1]  ; Load a byte from the first array
+    LDRB R4, [R2]  ; Load a byte from the second array
+    CMP R0, R4     ; Compare the loaded bytes
+    BNE not_equal  ; If the bytes are not equal, jump to not_equal
+
+    ADD R1, R1, #1 ; Increment the first array pointer
+    ADD R2, R2, #1 ; Increment the second array pointer
+    SUBS R3, R3, #1 ; Decrement the size counter
+    BNE compare_loop  ; If the size counter is not zero, continue comparing
+
+    ; Arrays are equal
+    MOV R0, #1
+    B finish_compare
+
+not_equal
+    ; Arrays are not equal
+    MOV R0, #0
+
+finish_compare
+    POP {R1, R2, R3, LR} ; Restore the registers
+    BX LR ; Return to the calling function
+
+; If 'E' is pressed and the password has 4 digits, store the password and display MSG_CLOSING
+
+MASTER_PW DCB "7777",0
+MSG_OPEN	DCB "Cofre Aberto :)!",0
+MSG_OPENING	DCB	"Cofre Abrindo!",0
+MSG_CLOSING	DCB "Cofre Fechando...",0
+MSG_CLOSED	DCB	"Cofre Fechado !",0
+MSG_BLOCKED	DCB	"Cofre Travado !",0
 MSG_PWscreen DCB " PW:",0
+MSG_AttemptScreen DCB "Tentativa --",0
 STR2 DCB " Teste ",0
 
     ALIGN                        ;Garante que o fim da seção está alinhada 

@@ -91,10 +91,30 @@ GPIO_PORTK              EQU 2_1000000000
 		EXPORT PortF_Output			; Permite chamar PortN_Output de outro arquivo
 		EXPORT PortJ_Input          ; Permite chamar PortJ_Input de outro arquivo
 		EXPORT GPIOPortJ_Handler
+		EXPORT EnableInterrupt
+		EXPORT DisableInterrupt
+
+		IMPORT LCD_init
+		IMPORT LCD_reset
+		IMPORT LCD_command
+		IMPORT LCD_write_data
+		IMPORT LCD_print_string
 			
-		IMPORT SysTick_Wait1us
+		IMPORT MKBOARD_init
+		IMPORT MKBOARD_getValuePressed
+		IMPORT MKBOARD_valueToASCII
+			
+		IMPORT LEDS_AND_DISPLAYS_init
+		IMPORT select_leds
+		IMPORT select_dig_DS
+		IMPORT turn_leds_ON
+		IMPORT turn_DS1_ON
+		IMPORT turn_DS2_ON
 		
-				
+		IMPORT SysTick_Wait1us
+		IMPORT SysTick_Wait1ms
+		
+		IMPORT enter_pw_master_interrupt		
 ;--------------------------------------------------------------------------------
 ; Função GPIO_Init
 ; Parâmetro de entrada: Não tem
@@ -257,13 +277,8 @@ bt_J0_pressed
 	LDR R1, =GPIO_PORTJ_AHB_ICR_R
 	STR R2, [R1]
 	MOV R0, #1
-	B set_led_interrupt
-set_led_interrupt
-	PUSH {LR}
-	BL PortF_Output
-	POP {LR}
-	
-	BX LR
+	B enter_pw_master_interrupt
+
 ; -------------------------------------------------------------------------------
 DisableInterrupt
 	LDR 	R0, =GPIO_PORTJ_AHB_IM_R
