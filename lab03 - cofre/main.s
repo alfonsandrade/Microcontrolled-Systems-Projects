@@ -65,12 +65,16 @@
 		
 		IMPORT SysTick_Wait1us
 		IMPORT SysTick_Wait1ms
+			
 ; ========================
 ; Constantes
-NUM_ATTEMPTS        EQU    0x20000004
+NUM_ATTEMPTS    EQU    0x20000004
+
 ; ========================
 ; Ponteiros
-ARRAY_PW            EQU    0x20000000
+ARRAY_PW        EQU 0x20000000
+INPUT_PW        EQU 0x20000008
+; Constantes
 
 ; -------------------------------------------------------------------------------
 ; Função main()    
@@ -87,26 +91,32 @@ MainLoop
 	BL LCD_reset
     LDR R0, =MSG_OPEN
     BL LCD_print_string
-    ; pega um valor do teclado
     MOV R0, #0xC0
     BL LCD_command
     LDR R0, =MSG_PWscreen
     BL LCD_print_string
-	
-wait_click
+
+wait_click_open
     BL MKBOARD_getValuePressed
     CMP R0, #0xFF
-    BEQ wait_click
+    BEQ wait_click_open
 ; Check if the pressed key is 'E'
     CMP R0, #0x0E
-    BNE not_e_key
+    BNE not_e_key_open
 ; Check if the password has 4 digits
     CMP R4, #4
-    BNE wait_click
-; If 'E' is pressed and the password has 4 digits, store the password and display MSG_CLOSING
+    BNE wait_click_open
+
 Closing
     BL LCD_reset
-    LDR R0, =MSG_CLOSING
+	LDR R1, =INPUT_PW ; Source array pointer
+    LDR R2, =ARRAY_PW ; Destination array pointer
+    MOV R3, #5 ; Size of the array to copy (4 digits + null-terminator)
+    BL copy_array ; Call the copy_array function
+    LDR R1, =INPUT_PW ; Array pointer
+    MOV R2, #5 ; Size of the array to clear (4 digits + null-terminator)
+    BL clear_array ; Call the clear_array function
+	LDR R0, =MSG_CLOSING
     BL LCD_print_string
 ; Display the stored password on the second line
 ; Print the MSG_PWscreen before displaying the stored password
@@ -129,33 +139,100 @@ display_password_loop
     BL SysTick_Wait1ms
 	BL Closed
 ; Display MSG_CLOSED
+
 Closed
     BL LCD_reset
     LDR R0, =MSG_CLOSED
     BL LCD_print_string
+	MOV R0, #0xC0
+    BL LCD_command
+    LDR R0, =MSG_PWscreen
+    BL LCD_print_string
+	MOV R4, #0
+wait_click_closed
+    BL MKBOARD_getValuePressed
+    CMP R0, #0xFF
+    BEQ wait_click_closed
+; Check if the pressed key is 'E'
+    CMP R0, #0x0E
+    BNE not_e_key_closed
+; Check if the password has 4 digits
+    CMP R4, #4
+    BNE wait_click_closed
+; If 'E' is pressed and the password has 4 digits, store the password and display MSG_CLOSING
 
-not_e_key
+
+copy_array
+    PUSH {R1, R2, R3, LR} ; Save the registers
+
+copy_loop
+    LDRB R0, [R1]  ; Load a byte from the source array
+    STRB R0, [R2]  ; Store the byte in the destination array
+    ADD R1, R1, #1 ; Increment the source array pointer
+    ADD R2, R2, #1 ; Increment the destination array pointer
+    SUBS R3, R3, #1 ; Decrement the size counter
+    BNE copy_loop  ; If the size counter is not zero, continue copying
+    POP {R1, R2, R3, LR} ; Restore the registers
+    BX LR ; Return to the calling function
+	
+clear_array
+    PUSH {R1, R2, LR} ; Save the registers
+
+clear_loop
+    MOV R0, #0      ; Load the value 0
+    STRB R0, [R1]   ; Store the value 0 in the array
+    ADD R1, R1, #1  ; Increment the array pointer
+    SUBS R2, R2, #1 ; Decrement the size counter
+    BNE clear_loop  ; If the size counter is not zero, continue clearing
+    POP {R1, R2, LR} ; Restore the registers
+    BX LR ; Return to the calling function
+
+; If 'E' is pressed and the password has 4 digits, store the password and display MSG_CLOSING
+not_e_key_open
 ; Check if the password already has 4 digits
     CMP R4, #4
-    BEQ wait_click
+    BEQ wait_click_open
 ; Store the pressed key value in ARRAY_PW
-    LDR R1, =ARRAY_PW
+    LDR R1, =INPUT_PW
     ADD R1, R1, R4
     STR R0, [R1]
 ; Increment the password length counter
     ADD R4, R4, #1
 ; Check if the password length counter is now 4
     CMP R4, #5
-    BNE not_final_digit
+    BNE not_final_digit_open
 ; If the password length counter is now 4, null-terminate the ARRAY_PW string
     ADD R1, R1, #1
     MOV R0, #0
     STR R0, [R1]
-not_final_digit
+not_final_digit_open
 ; Convert the value to ASCII and display it
     BL MKBOARD_valueToASCII
     BL LCD_write_data
-    B wait_click
+    B wait_click_open
+
+not_e_key_closed
+; Check if the password already has 4 digits
+    CMP R4, #4
+    BEQ wait_click_closed
+; Store the pressed key value in ARRAY_PW
+    LDR R1, =INPUT_PW
+    ADD R1, R1, R4
+    STR R0, [R1]
+; Increment the password length counter
+    ADD R4, R4, #1
+; Check if the password length counter is now 4
+    CMP R4, #5
+    BNE not_final_digit_closed
+; If the password length counter is now 4, null-terminate the ARRAY_PW string
+    ADD R1, R1, #1
+    MOV R0, #0
+    STR R0, [R1]
+not_final_digit_closed
+; Convert the value to ASCII and display it
+    BL MKBOARD_valueToASCII
+    BL LCD_write_data
+    B wait_click_closed
 
 MSG_OPEN	DCB "Cofre Aberto :) !",0
 MSG_OPENING	DCB	"Cofre Abrindo",0
@@ -163,6 +240,7 @@ MSG_CLOSING	DCB "Cofre Fechando",0
 MSG_CLOSED	DCB	"Cofre Fechado!  ",0
 MSG_LOCKED	DCB	"Cofre Travado!",0
 MSG_PWscreen DCB " PW:",0
+STR2 DCB " Teste ",0
 
     ALIGN                        ;Garante que o fim da seção está alinhada 
     END                          ;Fim do arquivo
