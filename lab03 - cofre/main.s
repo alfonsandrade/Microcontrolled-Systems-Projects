@@ -17,7 +17,10 @@
 
 ; -------------------------------------------------------------------------------
 ; Área de Dados - Declarações de variáveis
-		AREA  DATA, ALIGN=2
+		AREA  DATA, ALIGN = 2
+		EXPORT IS_ENABLE_TOUNLOCK [DATA,SIZE=4]
+IS_ENABLE_TOUNLOCK SPACE 4
+		
 		; Se alguma variável for chamada em outro arquivo
 		;EXPORT  <var> [DATA,SIZE=<tam>]   ; Permite chamar a variável <var> a 
 		                                   ; partir de outro arquivo
@@ -40,7 +43,7 @@
 		IMPORT  PLL_Init
 		IMPORT  SysTick_Init
 		IMPORT  SysTick_Wait1ms
-	
+		
 		IMPORT  GPIO_Init
         IMPORT  PortF_Output
         IMPORT  PortJ_Input
@@ -63,23 +66,43 @@
 		IMPORT turn_DS1_ON
 		IMPORT turn_DS2_ON
 		
-		IMPORT EnableInterrupt
-		IMPORT DisableInterrupt
+		IMPORT EnableInterrupts
+		IMPORT DisableInterrupts
 		
 		IMPORT SysTick_Wait1us
 		IMPORT SysTick_Wait1ms
 		
 		EXPORT enter_pw_master_interrupt
+			
 ; ========================
 ; Constantes
-NUM_ATTEMPTS    EQU    0x20000004
 
+	
 ; ========================
 ; Ponteiros
 ARRAY_PW        EQU 0x20000000
 INPUT_PW        EQU 0x20000008
+; ========================
 ; Constantes
+MASTER_PW 		EQU 0x20000030
 
+; Function to initialize master password
+init_master_pw
+    PUSH {R0, R1, LR}    ; Save registers
+    LDR R0, =MASTER_PW   ; Load the master password address to R0
+    MOV R1, #1           
+    STRB R1, [R0], #1   
+	MOV R1, #1          
+    STRB R1, [R0], #1  
+	MOV R1, #1         
+    STRB R1, [R0], #1   
+	MOV R1, #1          
+    STRB R1, [R0], #1  
+    ; Null-terminate the password string
+    MOV R1, #0 
+    STRB R1, [R0]   
+    POP {R0, R1, LR}  
+    BX LR
 ; -------------------------------------------------------------------------------
 ; Função main()    
 Start              
@@ -88,13 +111,18 @@ Start
     BL GPIO_Init                 ;Chama a subrotina que inicializa os GPIO
     BL LCD_init
     BL MKBOARD_init
-    BL LEDS_AND_DISPLAYS_init    
-    ; Initialize the password length counter
+    BL LEDS_AND_DISPLAYS_init
+	BL init_master_pw
+
 MainLoop
 	BL LCD_reset
+	;BL blink_off
 	MOV R5, #0
 	MOV R4, #0
-	;BL DisableInterrupt
+	LDR R1, =ARRAY_PW ; Array pointer
+    MOV R2, #5 ; Size of the array to clear (4 digits + null-terminator)
+	BL clear_array
+	BL DisableInterrupts
     LDR R0, =MSG_OPEN
     BL LCD_print_string
     MOV R0, #0xC0
@@ -225,8 +253,8 @@ not_final_digit_closed
     B wait_click_closed
 	
 attempt_count
-	ADD R5, R5, 1
-	CMP R5, #2
+	ADD R5, R5, #1
+	CMP R5, #3
 	BEQ Blocked
 	BNE attempt_screen
 
@@ -245,28 +273,33 @@ attempt_screen
 	LDR R0, =3000
     BL SysTick_Wait1ms
 	BL Closed
-	
 Blocked
-	BL LCD_reset
+    BL EnableInterrupts
+    BL LCD_reset
     LDR R0, =MSG_BLOCKED
     BL LCD_print_string
-;	BL EnableInterrupt
-	MOV R4, #0
 	LDR R1, =INPUT_PW ; Array pointer
-    MOV R2, #5 ; Size of the array to clear (4 digits + null-terminator)
-	BL clear_array
-	LDR R0, =3000
-    BL SysTick_Wait1ms
-	B Blocked
-
+	MOV R0, #0x0000
+	STR R0, [R1]
+	LDR R1, =IS_ENABLE_TOUNLOCK
+	MOV R0, #0
+	STR R0, [R1]
+blink_loop
+	BL blink_on
+	LDR R1, =IS_ENABLE_TOUNLOCK
+	LDR R0, [R1]
+	CMP R0, #1
+	BNE blink_loop
+	
 enter_pw_master_interrupt
-	BL LCD_reset
+    BL LCD_reset
     LDR R0, =MSG_BLOCKED
     BL LCD_print_string
 	MOV R0, #0xC0
     BL LCD_command
     LDR R0, =MSG_PWscreen
-	BL LCD_print_string
+    BL LCD_print_string
+	MOV R4, #0
 wait_click_blocked
     BL MKBOARD_getValuePressed
     CMP R0, #0xFF
@@ -277,17 +310,19 @@ wait_click_blocked
 ; Check if the password has 4 digits
     CMP R4, #4
     BNE wait_click_blocked
-Password_Check_master
+	
+; If 'E' is pressed and the password has 4 digits, store the password and display MSG_CLOSING
+Password_Check_blocked
 	; Call the compare_arrays function
 	LDR R1, =INPUT_PW ; Pointer to the first array (INPUT_PW)
 	LDR R2, =MASTER_PW ; Pointer to the second array (ARRAY_PW)
 	MOV R3, #4 ; Size of the arrays to compare (4 in your case)
-	BL compare_arrays ; Call the function
+	BL compare_arrays_blocked ; Call the function
 	; Check the result in R0
 	CMP R0, #1
 	BEQ Opening
 	BNE Blocked
-
+	
 not_e_key_blocked
 ; Check if the password already has 4 digits
     CMP R4, #4
@@ -309,7 +344,7 @@ not_final_digit_blocked
 ; Convert the value to ASCII and display it
     BL MKBOARD_valueToASCII
     BL LCD_write_data
-    B wait_click_closed
+    B wait_click_blocked
 
 copy_array
     PUSH {R1, R2, R3, LR} ; Save the registers
@@ -328,6 +363,18 @@ clear_array
     PUSH {R1, R2, LR} ; Save the registers
 
 clear_loop
+    MOV R0, #0      ; Load the value 0
+    STRB R0, [R1]   ; Store the value 0 in the array
+    ADD R1, R1, #1  ; Increment the array pointer
+    SUBS R2, R2, #1 ; Decrement the size counter
+    BNE clear_loop  ; If the size counter is not zero, continue clearing
+    POP {R1, R2, LR} ; Restore the registers
+    BX LR ; Return to the calling function
+
+clear_array_blocked
+    PUSH {R1, R2, LR} ; Save the registers
+
+clear_loop_blocked
     MOV R0, #0      ; Load the value 0
     STRB R0, [R1]   ; Store the value 0 in the array
     ADD R1, R1, #1  ; Increment the array pointer
@@ -368,16 +415,55 @@ finish_compare
     POP {R1, R2, R3, LR} ; Restore the registers
     BX LR ; Return to the calling function
 
-; If 'E' is pressed and the password has 4 digits, store the password and display MSG_CLOSING
 
-MASTER_PW DCB "7777",0
+compare_arrays_blocked
+    PUSH {R1, R2, R3, LR} ; Save the registers
+
+compare_loop_blocked
+    LDRB R0, [R1]  ; Load a byte from the first array
+    LDRB R4, [R2]  ; Load a byte from the second array
+    CMP R0, R4     ; Compare the loaded bytes
+    BNE not_equal_blocked  ; If the bytes are not equal, jump to not_equal
+
+    ADD R1, R1, #1 ; Increment the first array pointer
+    ADD R2, R2, #1 ; Increment the second array pointer
+    SUBS R3, R3, #1 ; Decrement the size counter
+    BNE compare_loop_blocked  ; If the size counter is not zero, continue comparing
+
+    ; Arrays are equal
+    MOV R0, #1
+    B finish_compare_blocked
+
+not_equal_blocked
+    ; Arrays are not equal
+    MOV R0, #0
+
+finish_compare_blocked
+    POP {R1, R2, R3, LR} ; Restore the registers
+    BX LR ; Return to the calling function
+
+blink_on
+	PUSH{LR}
+	MOV R0, #0xFF
+	BL select_leds
+	MOV R0, #1
+	BL turn_leds_ON
+	LDR R0, =500
+    BL SysTick_Wait1ms
+	MOV R0, #0
+	BL turn_leds_ON
+	LDR R0, =500
+    BL SysTick_Wait1ms
+	POP{LR}
+	BX LR
+
 MSG_OPEN	DCB "Cofre Aberto :)!",0
 MSG_OPENING	DCB	"Cofre Abrindo!",0
 MSG_CLOSING	DCB "Cofre Fechando...",0
 MSG_CLOSED	DCB	"Cofre Fechado !",0
 MSG_BLOCKED	DCB	"Cofre Travado !",0
 MSG_PWscreen DCB " PW:",0
-MSG_AttemptScreen DCB "Tentativa --",0
+MSG_AttemptScreen DCB " Tentativa falha :( ",0
 STR2 DCB " Teste ",0
 
     ALIGN                        ;Garante que o fim da seção está alinhada 

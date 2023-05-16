@@ -91,9 +91,6 @@ GPIO_PORTK              EQU 2_1000000000
 		EXPORT PortF_Output			; Permite chamar PortN_Output de outro arquivo
 		EXPORT PortJ_Input          ; Permite chamar PortJ_Input de outro arquivo
 		EXPORT GPIOPortJ_Handler
-		EXPORT EnableInterrupt
-		EXPORT DisableInterrupt
-
 		IMPORT LCD_init
 		IMPORT LCD_reset
 		IMPORT LCD_command
@@ -115,6 +112,7 @@ GPIO_PORTK              EQU 2_1000000000
 		IMPORT SysTick_Wait1ms
 		
 		IMPORT enter_pw_master_interrupt		
+		IMPORT IS_ENABLE_TOUNLOCK
 ;--------------------------------------------------------------------------------
 ; Função GPIO_Init
 ; Parâmetro de entrada: Não tem
@@ -269,35 +267,20 @@ PortJ_Input
 ; Parâmetro de entrada: Não tem
 ; Parâmetro de saída: nao tem
 GPIOPortJ_Handler
-	LDR R1, =GPIO_PORTJ_AHB_RIS_R
-	LDR R2, [R1]
-	CMP R2, #2_1
-	BEQ bt_J0_pressed
-bt_J0_pressed
-	LDR R1, =GPIO_PORTJ_AHB_ICR_R
-	STR R2, [R1]
-	MOV R0, #1
-	B enter_pw_master_interrupt
-
-; -------------------------------------------------------------------------------
-DisableInterrupt
-	LDR 	R0, =GPIO_PORTJ_AHB_IM_R
-	LDR 	R1, [R0]		;pega info
-	BIC		R1, #2_1		;reseta bits
-	ORR		R1, R1, #2_0 	;seta bits
-	STR		R1, [R0]		;registra
-
-
-EnableInterrupt
-	LDR 	R0, =GPIO_PORTJ_AHB_IM_R
-	LDR 	R1, [R0]	;pega info
-	BIC		R1, #2_11	;reseta bits
-	ORR		R1, R1, #2_11	;seta bits
-	STR		R1, [R0]	;registra
-
+	PUSH {R0,R1}
+	LDR R0, =IS_ENABLE_TOUNLOCK
+	MOV R1, #1
+	STR R1, [R0]
 	
-
+	LDR R0, =GPIO_PORTJ_AHB_ICR_R
+	LDR R1, [R0]
+	ORR R1, #2_11
+	STR R1, [R0]
+	POP {R0,R1}
+	BX LR
+	
 ; -------------------------------------------------------------------------------
+
 ; fim do arquivo
 	ALIGN                           ; garante que o fim da seção está alinhada 
     END                             ; fim do arquivo
