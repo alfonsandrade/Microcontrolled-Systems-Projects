@@ -39,8 +39,16 @@ int main(void)
 	LCD_init();
 	UART_init();
 	motor_init();
-
+	
+	uint16_t timer = 0;
+	
 	while (1) {
-		fullRotation_H();
+		
+		if(timer < 5000) {
+			motor_clockwise_halfRotation();
+			timer += 40;
+		}
+		else
+			motor_counterClockwise_halfRotation();
 	}
 }

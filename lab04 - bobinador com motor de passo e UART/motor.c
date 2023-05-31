@@ -31,13 +31,58 @@ void motor_init(void) {
 	// N/A
 }
 
-void fullRotation_H(void) {
-    GPIO_PORTH_AHB_DATA_R = (GPIO_PORTH_AHB_DATA_R & (!0xF)) | 0x8; // 2_1000
+void motor_clockwise_fullRotation(void) {
+    GPIO_PORTH_AHB_DATA_R = (GPIO_PORTH_AHB_DATA_R & (!0xF)) | 0xE; // 2_1110
     SysTick_Wait1ms(10);
-    GPIO_PORTH_AHB_DATA_R = (GPIO_PORTH_AHB_DATA_R & (!0xF)) | 0x4; // 2_0100
+    GPIO_PORTH_AHB_DATA_R = (GPIO_PORTH_AHB_DATA_R & (!0xF)) | 0xD; // 2_1101
     SysTick_Wait1ms(10);
-    GPIO_PORTH_AHB_DATA_R = (GPIO_PORTH_AHB_DATA_R & (!0xF)) | 0x2; // 2_0010
+    GPIO_PORTH_AHB_DATA_R = (GPIO_PORTH_AHB_DATA_R & (!0xF)) | 0xB; // 2_1011
     SysTick_Wait1ms(10);
-    GPIO_PORTH_AHB_DATA_R = (GPIO_PORTH_AHB_DATA_R & (!0xF)) | 0x1; // 2_0001
+    GPIO_PORTH_AHB_DATA_R = (GPIO_PORTH_AHB_DATA_R & (!0xF)) | 0x7; // 2_0111
+    SysTick_Wait1ms(10);
+}
+
+void motor_counterClockwise_fullRotation(void) {
+    GPIO_PORTH_AHB_DATA_R = (GPIO_PORTH_AHB_DATA_R & (!0xF)) | 0x7; // 2_0111
+    SysTick_Wait1ms(10);
+    GPIO_PORTH_AHB_DATA_R = (GPIO_PORTH_AHB_DATA_R & (!0xF)) | 0xB; // 2_1011
+    SysTick_Wait1ms(10);
+    GPIO_PORTH_AHB_DATA_R = (GPIO_PORTH_AHB_DATA_R & (!0xF)) | 0xD; // 2_1101
+    SysTick_Wait1ms(10);
+    GPIO_PORTH_AHB_DATA_R = (GPIO_PORTH_AHB_DATA_R & (!0xF)) | 0xE; // 2_1110
+    SysTick_Wait1ms(10);
+}
+
+void motor_clockwise_halfRotation(void) {
+    GPIO_PORTH_AHB_DATA_R = (GPIO_PORTH_AHB_DATA_R & (!0xF)) | 0xE; // 2_1110
+    SysTick_Wait1ms(10);
+    GPIO_PORTH_AHB_DATA_R = (GPIO_PORTH_AHB_DATA_R & (!0xF)) | 0xC; // 2_1100
+    SysTick_Wait1ms(10);
+    GPIO_PORTH_AHB_DATA_R = (GPIO_PORTH_AHB_DATA_R & (!0xF)) | 0xD; // 2_1101
+    SysTick_Wait1ms(10);
+    GPIO_PORTH_AHB_DATA_R = (GPIO_PORTH_AHB_DATA_R & (!0xF)) | 0x9; // 2_1001
+    SysTick_Wait1ms(10);
+    GPIO_PORTH_AHB_DATA_R = (GPIO_PORTH_AHB_DATA_R & (!0xF)) | 0xB; // 2_1011
+    SysTick_Wait1ms(10);
+    GPIO_PORTH_AHB_DATA_R = (GPIO_PORTH_AHB_DATA_R & (!0xF)) | 0x3; // 2_0011
+    SysTick_Wait1ms(10);
+    GPIO_PORTH_AHB_DATA_R = (GPIO_PORTH_AHB_DATA_R & (!0xF)) | 0x7; // 2_0111
+    SysTick_Wait1ms(10);
+}
+
+void motor_counterClockwise_halfRotation(void) {
+    GPIO_PORTH_AHB_DATA_R = (GPIO_PORTH_AHB_DATA_R & (!0xF)) | 0x7; // 2_0111
+    SysTick_Wait1ms(10);
+    GPIO_PORTH_AHB_DATA_R = (GPIO_PORTH_AHB_DATA_R & (!0xF)) | 0x3; // 2_0011
+    SysTick_Wait1ms(10);
+    GPIO_PORTH_AHB_DATA_R = (GPIO_PORTH_AHB_DATA_R & (!0xF)) | 0xB; // 2_1011
+    SysTick_Wait1ms(10);
+    GPIO_PORTH_AHB_DATA_R = (GPIO_PORTH_AHB_DATA_R & (!0xF)) | 0x9; // 2_1001
+    SysTick_Wait1ms(10);
+    GPIO_PORTH_AHB_DATA_R = (GPIO_PORTH_AHB_DATA_R & (!0xF)) | 0xD; // 2_1101
+    SysTick_Wait1ms(10);
+    GPIO_PORTH_AHB_DATA_R = (GPIO_PORTH_AHB_DATA_R & (!0xF)) | 0xC; // 2_1100
+    SysTick_Wait1ms(10);
+    GPIO_PORTH_AHB_DATA_R = (GPIO_PORTH_AHB_DATA_R & (!0xF)) | 0xE; // 2_1110
     SysTick_Wait1ms(10);
 }
