@@ -62,3 +62,35 @@ void UART_init(void)
     // 11. Configurar os pinos como digitais no registrador GPIODEN
     GPIO_PORTA_AHB_DEN_R = GPIO_PORTA_AHB_DEN_R | (0x3); // 2_11
 }
+
+char UART_receive(void) {
+
+    // verifica a possibilidade de leitura
+    if((UART0_FR_R & UART_FR_RXFE) != UART_FR_RXFE) {
+        return (UART0_DR_R & 0xFF);
+    }
+    return (char)-1;
+}
+
+int UART_send(char c) {
+
+    // verifica a possibilidade de envio
+    if((UART0_FR_R & UART_FR_TXFF) != UART_FR_TXFF) {
+        UART0_DR_R = c;
+        return 1;
+    }
+    return 0;
+}
+
+int UART_send_str(char* str) {
+    char *ptr = str;
+
+    // percorre ate o fim da string
+    while((*ptr) != 0) {
+        // caso falhe o envio
+        if(UART_send(*ptr) == 0)
+            return 0;
+        ptr++;
+    }
+    return 1;
+}

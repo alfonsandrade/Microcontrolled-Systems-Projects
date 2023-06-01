@@ -19,18 +19,6 @@ void GPIO_Init(void);
 uint32_t PortJ_Input(void);
 void PortN_Output(uint32_t leds);
 
-
-void leitura(void) {
-
-	uint8_t c;
-	
-	while((UART0_FR_R & UART_FR_RXFE) == UART_FR_RXFE) { }
-
-	c = UART0_DR_R;
-
-	LCD_write_data(c);
-}
-
 int main(void)
 {
 	PLL_Init();
@@ -40,15 +28,13 @@ int main(void)
 	UART_init();
 	motor_init();
 	
-	uint16_t timer = 0;
-	
+	char c =  'a';
+
 	while (1) {
 		
-		if(timer < 5000) {
-			motor_clockwise_halfRotation();
-			timer += 40;
-		}
-		else
-			motor_counterClockwise_halfRotation();
+		UART_send_str("Ola mundo \r\n");
+		SysTick_Wait1ms(1500);
+//		UART_send(c);
+//		c++;
 	}
 }
