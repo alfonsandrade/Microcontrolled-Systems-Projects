@@ -1,5 +1,14 @@
 .\objects\main.o: main.c
 .\objects\main.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
+.\objects\main.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdbool.h
 .\objects\main.o: tm4c1294ncpdt.h
-.\objects\main.o: uart.h
+.\objects\main.o: util.h
+.\objects\main.o: conversores.h
+.\objects\main.o: leds_onboard.h
+.\objects\main.o: leds_and_displays.h
+.\objects\main.o: lcd.h
+.\objects\main.o: matrix_keyboard.h
+.\objects\main.o: timer.h
 .\objects\main.o: motor.h
+.\objects\main.o: uart.h
+.\objects\main.o: sw1_and_sw2.h

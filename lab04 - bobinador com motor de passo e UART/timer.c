@@ -15,12 +15,11 @@ void timer_init(void) {
     // bits respectivos do registrador GPTMCFG
     TIMER2_CFG_R = TIMER2_CFG_R & (!0x3);
 
-    // 4. Como vamos usar o timerA e vamos contar apenas uma vez, vamos colocá-lo no modo one-shot,
-    // colocando 1 no campo respectivo do registrador GPTMTAMR (Tem o nome diferente no .h)
+    // 4. selecao de modo 0x2: periodico
     TIMER2_TAMR_R = TIMER2_TAMR_R | 0x2;
 
     // 5. Carregar o valor de contagem no registrador timerA no registrador GPTMTAILR
-    TIMER2_TAILR_R = 55999999;
+    TIMER2_TAILR_R = 15999999; //0.2 s * 80Mhz - 1
 
     // 6. Como não temos prescale, deixar o registrador GPTMTAPR zerado.
     TIMER2_TAPR_R = TIMER2_TAPR_R & (!0xFF);

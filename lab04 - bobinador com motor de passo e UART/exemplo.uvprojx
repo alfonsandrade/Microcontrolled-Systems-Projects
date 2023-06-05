@@ -394,24 +394,34 @@
               <FilePath>.\utils.s</FilePath>
             </File>
             <File>
-              <FileName>main.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\main.c</FilePath>
-            </File>
-            <File>
               <FileName>tm4c1294ncpdt.h</FileName>
               <FileType>5</FileType>
               <FilePath>.\tm4c1294ncpdt.h</FilePath>
             </File>
             <File>
-              <FileName>gpio.c</FileName>
+              <FileName>main.c</FileName>
               <FileType>1</FileType>
-              <FilePath>.\gpio.c</FilePath>
+              <FilePath>.\main.c</FilePath>
+            </File>
+            <File>
+              <FileName>leds_and_displays.s</FileName>
+              <FileType>2</FileType>
+              <FilePath>.\leds_and_displays.s</FilePath>
             </File>
             <File>
               <FileName>lcd.s</FileName>
               <FileType>2</FileType>
               <FilePath>.\lcd.s</FilePath>
+            </File>
+            <File>
+              <FileName>matrix_keyboard.s</FileName>
+              <FileType>2</FileType>
+              <FilePath>.\matrix_keyboard.s</FilePath>
+            </File>
+            <File>
+              <FileName>leds_onboard.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\leds_onboard.c</FilePath>
             </File>
             <File>
               <FileName>timer.c</FileName>
@@ -427,6 +437,16 @@
               <FileName>motor.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\motor.c</FilePath>
+            </File>
+            <File>
+              <FileName>sw1_and_sw2.s</FileName>
+              <FileType>2</FileType>
+              <FilePath>.\sw1_and_sw2.s</FilePath>
+            </File>
+            <File>
+              <FileName>conversores.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\conversores.c</FilePath>
             </File>
           </Files>
         </Group>

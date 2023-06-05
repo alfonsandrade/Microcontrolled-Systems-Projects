@@ -72,25 +72,25 @@ char UART_receive(void) {
     return (char)-1;
 }
 
-int UART_send(char c) {
-
+void UART_send(char c) {
     // verifica a possibilidade de envio
-    if((UART0_FR_R & UART_FR_TXFF) != UART_FR_TXFF) {
-        UART0_DR_R = c;
-        return 1;
-    }
-    return 0;
+    while((UART0_FR_R & UART_FR_TXFF) == UART_FR_TXFF) { }
+    UART0_DR_R = c;
 }
 
-int UART_send_str(char* str) {
+void UART_send_str(char* str) {
     char *ptr = str;
-
     // percorre ate o fim da string
     while((*ptr) != 0) {
-        // caso falhe o envio
-        if(UART_send(*ptr) == 0)
-            return 0;
+        UART_send(*ptr);
         ptr++;
     }
-    return 1;
+}
+
+void UART_clear_terminal(void)  {
+    /** 
+     * "\033[2J" limpa a tela
+     * "\033[H" move o cursor para a posição inicial (canto superior esquerdo) do terminal.
+    */
+    UART_send_str("\033[2J\033[H");
 }
