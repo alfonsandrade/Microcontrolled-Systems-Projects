@@ -1,6 +1,7 @@
 #ifndef _CONVERSORES_H_
 #define _CONVERSORES_H_
-
+#include <stdio.h>
+#include <stdlib.h>
 /**
  * @brief conversão de um valor decimal para char
  * @param decimal valor entre 0 e 9
@@ -14,5 +15,7 @@ char decimalToChar(unsigned int decimal);
  * @return inteiro correspondente ou -1 caso decimal fora do range
 */
 int charToDecimal(char caractere);
+
+int stringToInt(char* numStr);
 
 #endif //_CONVERSORES_H_

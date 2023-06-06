@@ -157,26 +157,58 @@ void runState_INIT() {
 }
 
 void runState_GET_INPUT(void) {
-
+    
+    char str_Turns[10];  // array para armazenar a string de números
+    int i;
 	// solicitar numero de voltas
-	motor.turns_remaining = 1;
+    UART_send_str("Por favor insira o numero de voltas e pressione ENTER \n\r");
+    // suponha que você esteja lendo caracteres de uma UART serial em um loop
+    for (i = 0; i < 9; i++) {
+        str_Turns[i] = UART_receive();  
+        if (str_Turns[i] == '\n' || str_Turns[i] == '\r' ) {   // se um caractere de nova linha, pare de ler
+            break;
+        }
+    }
+    str_Turns[i] = '\0';  // termine a string com um caractere nulo
+    int int_Turns = stringToInt( str_Turns );
+	motor.turns_remaining = int_Turns;
 
 	// solicitar o sentido
+    UART_send_str("Por favor insira o sentido 'h' para horario 'a' para anti-horario \n\r");
 	//motor.direction = CLOCKWISE;
-	motor.direction = COUNTER_CLOCKWISE;
-
+    char direction = 'z'; 
+    while(direction != 'h' && direction != 'a'){
+        direction = UART_receive( );
+    }
+    if(direction == 'h'){
+        motor.direction = CLOCKWISE;
+    }
+    else{
+        motor.direction = COUNTER_CLOCKWISE;
+    }
 	// solicitar a velocidade
 	motor.speed = HALF_STEP;
 	//motor.speed = FULL_STEP;
-	
+	char speed = 'z'; 
+    while(direction != 's' && direction != 'f'){
+        direction = UART_receive( );
+    }
+    if(direction == 's'){
+        motor.speed = HALF_STEP;
+    }
+    else{
+        motor.speed = FULL_STEP;
+    }
+    printf("Motor Settings:\n");
+    printf("Speed: %c\n", motor.speed);
+    printf("Direction: %c\n", motor.direction);
+    printf("Turns Remaining: %d\n", motor.turns_remaining);
 	state = STATE_INIT_CYCLE;
 }
 
 void runState_INIT_CYCLE(void) {
-
 	// inicializa interrupcoes
 	EnableInterrupts();
-
 	if(motor.direction == CLOCKWISE) {
 		leds.selected = 0x80;
 	} else {
@@ -184,7 +216,6 @@ void runState_INIT_CYCLE(void) {
 	}
 	select_leds(leds.selected);
 	turn_leds_ON(true);
-
 	// retorno ao usuario
 	UART_send_str("Sentido: ");
 	if(motor.direction == CLOCKWISE) {
