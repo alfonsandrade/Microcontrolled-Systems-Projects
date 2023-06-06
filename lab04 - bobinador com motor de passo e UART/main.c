@@ -29,23 +29,24 @@ typedef enum State {
 	STATE_END
 } State;
 
-#define HALF_STEP 's' 		// slow
-#define FULL_STEP 'f' 		// fast
-#define CLOCKWISE 'h'			// horario
-#define COUNTER_CLOCKWISE 'a'	// anti-horario
+#define HALF_STEP 's' 				// slow
+#define FULL_STEP 'f' 			 // fast
+#define CLOCKWISE 'h'			 // horario
+#define COUNTER_CLOCKWISE 'a'	 // anti-horario
+#define ANGLE_PER_CYCLE 0.703125 // angulo por ciclo de giro
 
 /* Estruturas */
 
 typedef struct Motor {
 	int turns_remaining;	// numero de voltas de 1 a 10
-	int32_t angle;			// angulo rotacionado
+	double angle;			// angulo rotacionado
 	char direction;			// CLOCKWISE ou COUNTER_CLOCKWISE
 	char speed;				// HALF_STEP ou FULL_STEP
 } Motor;
 
 typedef struct  Leds {
 	uint8_t selected;	// leds selecionados 0x00 a 0xFF
-	int32_t angle;		// angulo rotacionado
+	double angle;		// angulo rotacionado
 } Leds;
 
 /* variaveis */
@@ -54,6 +55,7 @@ State state = STATE_INIT;	// estado atual da maquina
 Motor motor;				// instancia do motor
 Leds leds;					// instancia dos leds sequenciais
 bool led_onboard_on; 		// booleano que define se o led onboard esta ligado
+bool interrupt_cycle;		// booleano que define se o ciclo devera ser interrompido (via interrupcao)
 
 /** @brief interrupcao do timer */
 void Timer2A_Handler(void);
@@ -158,24 +160,25 @@ void runState_INIT() {
 
 void runState_GET_INPUT(void) {
     
-    char str_Turns[10];  // array para armazenar a string de números
+    char str_Turns[3];  // array para armazenar a string de números
+	char c;
     int i;
 	// solicitar numero de voltas
-    UART_send_str("Por favor insira o numero de voltas e pressione ENTER \n\r");
+    UART_send_str("Por favor insira o numero de voltas\n\r");
     // suponha que você esteja lendo caracteres de uma UART serial em um loop
-    for (i = 0; i < 9; i++) {
-        str_Turns[i] = UART_receive();  
-        if (str_Turns[i] == '\n' || str_Turns[i] == '\r' ) {   // se um caractere de nova linha, pare de ler
-            break;
-        }
-    }
-    str_Turns[i] = '\0';  // termine a string com um caractere nulo
-    int int_Turns = stringToInt( str_Turns );
-	motor.turns_remaining = int_Turns;
+	i = 0;
+	while(i < 2) {
+		c = UART_receive();
+		if(c != (char)-1) {
+			str_Turns[i] = c;
+			i++;
+		}
+	}
+	str_Turns[i] = '\0';
+    motor.turns_remaining = stringToInt(str_Turns);
 
 	// solicitar o sentido
-    UART_send_str("Por favor insira o sentido 'h' para horario 'a' para anti-horario \n\r");
-	//motor.direction = CLOCKWISE;
+    UART_send_str("\n\rPor favor insira o sentido 'h' para horario 'a' para anti-horario \n\r");	
     char direction = 'z'; 
     while(direction != 'h' && direction != 'a'){
         direction = UART_receive( );
@@ -186,29 +189,28 @@ void runState_GET_INPUT(void) {
     else{
         motor.direction = COUNTER_CLOCKWISE;
     }
+	
 	// solicitar a velocidade
-	motor.speed = HALF_STEP;
-	//motor.speed = FULL_STEP;
+	UART_send_str("\n\rPor favor insira a velocidade 's' para half-step 'f' full-step \n\r");
 	char speed = 'z'; 
     while(direction != 's' && direction != 'f'){
         direction = UART_receive( );
     }
     if(direction == 's'){
         motor.speed = HALF_STEP;
-    }
-    else{
+    } else {
         motor.speed = FULL_STEP;
     }
-    printf("Motor Settings:\n");
-    printf("Speed: %c\n", motor.speed);
-    printf("Direction: %c\n", motor.direction);
-    printf("Turns Remaining: %d\n", motor.turns_remaining);
+
 	state = STATE_INIT_CYCLE;
 }
 
 void runState_INIT_CYCLE(void) {
+
 	// inicializa interrupcoes
 	EnableInterrupts();
+	interrupt_cycle = false;
+
 	if(motor.direction == CLOCKWISE) {
 		leds.selected = 0x80;
 	} else {
@@ -216,8 +218,9 @@ void runState_INIT_CYCLE(void) {
 	}
 	select_leds(leds.selected);
 	turn_leds_ON(true);
+
 	// retorno ao usuario
-	UART_send_str("Sentido: ");
+	UART_send_str("\n\rSentido: ");
 	if(motor.direction == CLOCKWISE) {
 		UART_send_str("HORARIO \n\r");
 	} else {
@@ -247,20 +250,18 @@ void runState_PRINT_TURN(void) {
 
 void runState_INCREMENTS_ANGLES(void) {
 
-	// incrementa angulo do motor, leds e toma decisao de giro
-	if(motor.speed == FULL_STEP) {
-		motor.angle += 88;
-		leds.angle += 88;
+	// incrementa angulo do motor
+	motor.angle += ANGLE_PER_CYCLE; 
+	leds.angle += ANGLE_PER_CYCLE;
 
+	// toma decisao de giro
+	if(motor.speed == FULL_STEP) {
 		if(motor.direction == CLOCKWISE) {
 			state = STATE_FULL_CW;
 		} else {
 			state = STATE_FULL_CC;
 		}
-	} else {
-		motor.angle += 44;
-		leds.angle += 44;
-		
+	} else {	
 		if(motor.direction == CLOCKWISE) {
 			state = STATE_HALF_CW;
 		} else {
@@ -291,8 +292,8 @@ void runState_CC_HALF(void) {
 
 void runState_UPDATE_LEDS(void) {
 
-	if(leds.angle > 45000) {
-		leds.angle -= 45000;
+	if(leds.angle > 45.0) {
+		leds.angle -= 45.0;
 		if(motor.direction == CLOCKWISE) {
 			if(leds.selected == 0x1) {
 				leds.selected = 0x80;
@@ -314,17 +315,21 @@ void runState_UPDATE_LEDS(void) {
 
 void runState_UPDATE_TURNS(void) {
 
-	if(motor.angle > 3600000) {
-		motor.angle -= 360000;
-		motor.turns_remaining -= 1;
-
-		if(motor.turns_remaining < 0) {
-			state = STATE_END;
-		} else {
-			state = STATE_PRINT_TURN;
-		}
+	if(interrupt_cycle == true) {
+		state = STATE_END;
 	} else {
-		state = STATE_INCREMENTS_ANGLES;
+		if(motor.angle > 360.0) {
+			motor.angle -= 360.0;
+			motor.turns_remaining -= 1;
+
+			if(motor.turns_remaining < 1) {
+				state = STATE_END;
+			} else {
+				state = STATE_PRINT_TURN;
+			}
+		} else {
+			state = STATE_INCREMENTS_ANGLES;
+		}
 	}
 }
 
@@ -335,6 +340,7 @@ void runState_END() {
 
 	// apaga os leds
 	turn_leds_ON(false);
+	PortN_Output(0x0);
 
 	// mostra mensagem de FIM no terminal
 	UART_send_str("FIM \r\n");
@@ -364,6 +370,6 @@ void GPIOPortJ_Handler(void) {
 	// Limpa flag de interrupcao
 	GPIO_PORTJ_AHB_ICR_R = GPIO_PORTJ_AHB_ICR_R | (0x3);
 
-	// Atualiza novo estado
-	state = STATE_END;
+	// Atualiza flag de interrupcao
+	interrupt_cycle = true;
 }

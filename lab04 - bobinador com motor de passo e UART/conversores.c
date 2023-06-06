@@ -14,6 +14,5 @@ int charToDecimal(char caractere) {
 
 int stringToInt(char* numStr) {
     int num = atoi(numStr);  // converte o vetor de caracteres para um inteiro
-    printf("Convertendo \n O número de voltas é: %d\n", num);
     return num;
 }

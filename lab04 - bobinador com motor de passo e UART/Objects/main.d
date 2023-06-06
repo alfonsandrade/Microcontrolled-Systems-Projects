@@ -4,6 +4,8 @@
 .\objects\main.o: tm4c1294ncpdt.h
 .\objects\main.o: util.h
 .\objects\main.o: conversores.h
+.\objects\main.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
+.\objects\main.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdlib.h
 .\objects\main.o: leds_onboard.h
 .\objects\main.o: leds_and_displays.h
 .\objects\main.o: lcd.h
