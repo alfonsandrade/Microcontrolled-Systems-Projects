@@ -10,7 +10,7 @@ void ADC_init(void) {
     // verifica no PRGPIO se a porta esta pronta para uso
     while((SYSCTL_PRGPIO_R & GPIO_PORTE ) != GPIO_PORTE) { }
     
-    // 2. AMSEL para 1:habilitar, 0:desabilitar funlcao analogica no pino
+    // 2. AMSEL para 1:habilitar, 0:desabilitar funcao analogica no pino
     GPIO_PORTE_AHB_AMSEL_R = GPIO_PORTE_AHB_AMSEL_R | 0x10; // PE4: potenciometro
 
     // 3. DIR para 0: input (&!(...)), 1: output (|(...))
@@ -25,6 +25,9 @@ void ADC_init(void) {
     
     // PCTL para selecionar o GPIO (VERIFICAR SE EH NECESSARIO USAR ISSO NO ADC)
     // GPIO_PORTE_AHB_PCTL_R = GPIO_PORTE_AHB_PCTL_R & (!0x10);
+
+    // PUR: 0: dabilita, 1: habilita resistor de pull-up interno
+    GPIO_PORTE_AHB_PUR_R |= 0x10;
 
     // configuração do ADC
 
@@ -53,7 +56,7 @@ void ADC_init(void) {
     // datasheet pdf 1077: Register 1: ADC Active Sample Sequencer (ADCACTSS), offset 0x000
     ADC0_ACTSS_R = ADC0_ACTSS_R & (!0x8);
 
-    // 10. EMUX: configura o tipo de catilho para cada conversão analogica.
+    // 10. EMUX: configura o tipo de gatilho para cada conversão analogica.
     // Por exemplo, se for utilizar gatilho por software no SS3, escrever 0000 nos bits EM3[3-0].
     // datasheet pdf 1091: Register 6: ADC Event Multiplexer Select (ADCEMUX), offset 0x014
     ADC0_EMUX_R = ADC0_EMUX_R & !(0xF000);
@@ -62,7 +65,6 @@ void ADC_init(void) {
     // Por exemplo, se utilizar o canal AN0 (PE3) no SS3, escrever 0000 nos bits 3-0 do registrador ADCSSMUX3.
     // datasheet pdf 1141: Register 41: ADC Sample Sequence Input Multiplexer Select 3 (ADCSSMUX3), offset 0x0A0
     ADC0_SSMUX3_R = ADC0_SSMUX3_R | 0x9; // AIN9 (PE4)
-
     
     // 12. ADCSSCTLn: configura ob bit de controle para cada amostra da sequencia de amostragem
     // Sempre o último nibble deve ter o bit END setado.

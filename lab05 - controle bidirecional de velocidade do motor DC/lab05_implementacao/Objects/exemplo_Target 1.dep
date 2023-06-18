@@ -3,16 +3,19 @@ CompilerVersion: 5060960::V5.06 update 7 (build 960)::.\ARMCC
 F (.\startup.s)(0x645A384F)(--cpu Cortex-M4.fp.sp --pd "__EVAL SETA 1" -g --apcs=interwork -IC:\Users\roger\AppData\Local\Arm\Packs\Keil\TM4C_DFP\1.1.0\Device\Include\TM4C129--pd "__UVISION_VERSION SETA 536" --pd "TM4C1294NCPDT SETA 1"--list .\listings\startup.lst --xref -o .\objects\startup.o --depend .\objects\startup.d)
 F (.\utils.s)(0x646CB403)(--cpu Cortex-M4.fp.sp --pd "__EVAL SETA 1" -g --apcs=interwork -IC:\Users\roger\AppData\Local\Arm\Packs\Keil\TM4C_DFP\1.1.0\Device\Include\TM4C129--pd "__UVISION_VERSION SETA 536" --pd "TM4C1294NCPDT SETA 1"--list .\listings\utils.lst --xref -o .\objects\utils.o --depend .\objects\utils.d)
 F (.\tm4c1294ncpdt.h)(0x645A384F)()
-F (.\main.c)(0x648E4DD4)(--c99 -c --cpu Cortex-M4.fp.sp -D__EVAL -g -O0 --apcs=interwork --split_sections-IC:\Users\roger\AppData\Local\Arm\Packs\Keil\TM4C_DFP\1.1.0\Device\Include\TM4C129-D__UVISION_VERSION="536" -DTM4C1294NCPDT-o .\objects\main.o --omf_browse .\objects\main.crf --depend .\objects\main.d)
+F (.\main.c)(0x648F6A12)(--c99 -c --cpu Cortex-M4.fp.sp -D__EVAL -g -O0 --apcs=interwork --split_sections-IC:\Users\roger\AppData\Local\Arm\Packs\Keil\TM4C_DFP\1.1.0\Device\Include\TM4C129-D__UVISION_VERSION="536" -DTM4C1294NCPDT-o .\objects\main.o --omf_browse .\objects\main.crf --depend .\objects\main.d)
 I (C:\Keil_v5\ARM\ARMCC\include\stdint.h)(0x6025BE2E)
 I (C:\Keil_v5\ARM\ARMCC\include\stdbool.h)(0x6025BE2C)
 I (tm4c1294ncpdt.h)(0x645A384F)
+I (conversores.h)(0x648F2F72)
+I (C:\Keil_v5\ARM\ARMCC\include\stdio.h)(0x6025BE24)
+I (C:\Keil_v5\ARM\ARMCC\include\stdlib.h)(0x6025BE24)
 I (util.h)(0x647D29CB)
 I (adc.h)(0x648E2BD1)
 I (timer.h)(0x647D29CB)
-I (lcd.h)(0x647D29CB)
+I (lcd.h)(0x648F2814)
 I (matrix_keyboard.h)(0x647D29CB)
-I (motor_DC.h)(0x648E4D85)
+I (motor_DC.h)(0x648F3AAF)
 I (leds_and_displays.h)(0x647D29CB)
 F (.\leds_and_displays.s)(0x647D29CB)(--cpu Cortex-M4.fp.sp --pd "__EVAL SETA 1" -g --apcs=interwork -IC:\Users\roger\AppData\Local\Arm\Packs\Keil\TM4C_DFP\1.1.0\Device\Include\TM4C129--pd "__UVISION_VERSION SETA 536" --pd "TM4C1294NCPDT SETA 1"--list .\listings\leds_and_displays.lst --xref -o .\objects\leds_and_displays.o --depend .\objects\leds_and_displays.d)
 F (.\lcd.s)(0x64613BA8)(--cpu Cortex-M4.fp.sp --pd "__EVAL SETA 1" -g --apcs=interwork -IC:\Users\roger\AppData\Local\Arm\Packs\Keil\TM4C_DFP\1.1.0\Device\Include\TM4C129--pd "__UVISION_VERSION SETA 536" --pd "TM4C1294NCPDT SETA 1"--list .\listings\lcd.lst --xref -o .\objects\lcd.o --depend .\objects\lcd.d)
@@ -21,15 +24,20 @@ F (.\timer.c)(0x648E2D12)(--c99 -c --cpu Cortex-M4.fp.sp -D__EVAL -g -O0 --apcs=
 I (timer.h)(0x647D29CB)
 I (C:\Keil_v5\ARM\ARMCC\include\stdint.h)(0x6025BE2E)
 I (tm4c1294ncpdt.h)(0x645A384F)
-F (.\conversores.c)(0x647F2804)(--c99 -c --cpu Cortex-M4.fp.sp -D__EVAL -g -O0 --apcs=interwork --split_sections-IC:\Users\roger\AppData\Local\Arm\Packs\Keil\TM4C_DFP\1.1.0\Device\Include\TM4C129-D__UVISION_VERSION="536" -DTM4C1294NCPDT-o .\objects\conversores.o --omf_browse .\objects\conversores.crf --depend .\objects\conversores.d)
-I (conversores.h)(0x647F1772)
+F (.\conversores.c)(0x648F2F77)(--c99 -c --cpu Cortex-M4.fp.sp -D__EVAL -g -O0 --apcs=interwork --split_sections-IC:\Users\roger\AppData\Local\Arm\Packs\Keil\TM4C_DFP\1.1.0\Device\Include\TM4C129-D__UVISION_VERSION="536" -DTM4C1294NCPDT-o .\objects\conversores.o --omf_browse .\objects\conversores.crf --depend .\objects\conversores.d)
+I (conversores.h)(0x648F2F72)
 I (C:\Keil_v5\ARM\ARMCC\include\stdio.h)(0x6025BE24)
 I (C:\Keil_v5\ARM\ARMCC\include\stdlib.h)(0x6025BE24)
-F (.\adc.c)(0x648E2984)(--c99 -c --cpu Cortex-M4.fp.sp -D__EVAL -g -O0 --apcs=interwork --split_sections-IC:\Users\roger\AppData\Local\Arm\Packs\Keil\TM4C_DFP\1.1.0\Device\Include\TM4C129-D__UVISION_VERSION="536" -DTM4C1294NCPDT-o .\objects\adc.o --omf_browse .\objects\adc.crf --depend .\objects\adc.d)
+F (.\adc.c)(0x648F224D)(--c99 -c --cpu Cortex-M4.fp.sp -D__EVAL -g -O0 --apcs=interwork --split_sections-IC:\Users\roger\AppData\Local\Arm\Packs\Keil\TM4C_DFP\1.1.0\Device\Include\TM4C129-D__UVISION_VERSION="536" -DTM4C1294NCPDT-o .\objects\adc.o --omf_browse .\objects\adc.crf --depend .\objects\adc.d)
 I (adc.h)(0x648E2BD1)
 I (tm4c1294ncpdt.h)(0x645A384F)
 I (C:\Keil_v5\ARM\ARMCC\include\stdint.h)(0x6025BE2E)
-F (.\motor_DC.c)(0x648E4D1E)(--c99 -c --cpu Cortex-M4.fp.sp -D__EVAL -g -O0 --apcs=interwork --split_sections-IC:\Users\roger\AppData\Local\Arm\Packs\Keil\TM4C_DFP\1.1.0\Device\Include\TM4C129-D__UVISION_VERSION="536" -DTM4C1294NCPDT-o .\objects\motor_dc.o --omf_browse .\objects\motor_dc.crf --depend .\objects\motor_dc.d)
-I (motor_DC.h)(0x648E4D85)
+F (.\motor_DC.c)(0x648F6836)(--c99 -c --cpu Cortex-M4.fp.sp -D__EVAL -g -O0 --apcs=interwork --split_sections-IC:\Users\roger\AppData\Local\Arm\Packs\Keil\TM4C_DFP\1.1.0\Device\Include\TM4C129-D__UVISION_VERSION="536" -DTM4C1294NCPDT-o .\objects\motor_dc.o --omf_browse .\objects\motor_dc.crf --depend .\objects\motor_dc.d)
+I (motor_DC.h)(0x648F3AAF)
 I (C:\Keil_v5\ARM\ARMCC\include\stdint.h)(0x6025BE2E)
 I (tm4c1294ncpdt.h)(0x645A384F)
+I (C:\Keil_v5\ARM\ARMCC\include\stdbool.h)(0x6025BE2C)
+F (.\lcd.c)(0x648F4AE7)(--c99 -c --cpu Cortex-M4.fp.sp -D__EVAL -g -O0 --apcs=interwork --split_sections-IC:\Users\roger\AppData\Local\Arm\Packs\Keil\TM4C_DFP\1.1.0\Device\Include\TM4C129-D__UVISION_VERSION="536" -DTM4C1294NCPDT-o .\objects\lcd_1.o --omf_browse .\objects\lcd_1.crf --depend .\objects\lcd_1.d)
+I (lcd.h)(0x648F2814)
+I (C:\Keil_v5\ARM\ARMCC\include\stdint.h)(0x6025BE2E)
+I (util.h)(0x647D29CB)

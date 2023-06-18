@@ -16,3 +16,12 @@ int stringToInt(char* numStr) {
     int num = atoi(numStr);  // converte o vetor de caracteres para um inteiro
     return num;
 }
+
+void intToString(unsigned int num, char* str) {
+    str[3] = '\0';
+    str[2] = '0' + (num%10);
+    num /= 10;
+    str[1] = '0' + (num%10);
+    num /= 10;
+    str[0] = '0' + (num%10);
+}

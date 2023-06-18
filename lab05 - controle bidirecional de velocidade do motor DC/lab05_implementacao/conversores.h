@@ -2,6 +2,7 @@
 #define _CONVERSORES_H_
 #include <stdio.h>
 #include <stdlib.h>
+
 /**
  * @brief conversão de um valor decimal para char
  * @param decimal valor entre 0 e 9
@@ -16,6 +17,11 @@ char decimalToChar(unsigned int decimal);
 */
 int charToDecimal(char caractere);
 
-int stringToInt(char* numStr);
+/**
+ * @brief converte um valor para string
+ * @param num 0-100
+ * @param str ponteiro para a primeira posicao da string ja alocada com 4 posicoes sendo ddd'\0'
+*/
+void intToString(unsigned int num, char* str);
 
 #endif //_CONVERSORES_H_
