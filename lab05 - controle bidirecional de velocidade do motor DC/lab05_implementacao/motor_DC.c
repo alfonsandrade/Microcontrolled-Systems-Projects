@@ -50,12 +50,14 @@ void motor_dc_ON(bool on) {
 }
 
 void motor_dc_uptade(bool pwm_signal, bool direction) {
-    // atualiza port IN1 e IN2 do U1
-    if(direction) {
-        GPIO_PORTE_AHB_DATA_R |= (pwm_signal); // PE0: HIGH ou LOW
-        GPIO_PORTE_AHB_DATA_R &= (!0x2);       // PE1: LOW
+    // atualiza port IN1 e IN2 do U1	
+    if(pwm_signal) {
+        if(direction){
+            GPIO_PORTE_AHB_DATA_R = 0x1;
+        } else {
+            GPIO_PORTE_AHB_DATA_R = 0x2;
+        }
     } else {
-        GPIO_PORTE_AHB_DATA_R &= (!0x1);
-        GPIO_PORTE_AHB_DATA_R |= (pwm_signal << 1); // PE1: HIGH ou LOW
-    }
+        GPIO_PORTE_AHB_DATA_R = 0x3;
+		}	
 }

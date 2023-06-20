@@ -154,7 +154,6 @@ void runState_START_MOTOR(void) {
 	timer_ms = 0;
 	current_direction = selected_direction;
 
-	turn_leds_ON(true);
 	motor_dc_ON(true);
 	EnableInterrupts();
 
@@ -208,16 +207,11 @@ void runState_UPDADE_CONFIG(void) {
 
 void runState_UPDADE_LCD_AND_MOTOR(void) {
 	
-	// substituir assim que o motor estiver testado
-	{
-	if(current_direction == 'h' && PWM_signal == HIGH)
-		select_leds(0x0F);
-	else if(current_direction == 'a' && PWM_signal == HIGH)
-		select_leds(0xF0);
-	else
-		select_leds(0x00);
+	if(current_direction == 'h') {
+		motor_dc_uptade(PWM_signal, 1);
+	} else {
+		motor_dc_uptade(PWM_signal, 0);
 	}
-	//motor_dc_uptade(PWM_signal, current_direction);
 
 	static char buffer[4];
 	
